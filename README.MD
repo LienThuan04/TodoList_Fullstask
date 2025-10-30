@@ -141,7 +141,7 @@ tsc --init
   "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon",
+    "start": "ts-node -r tsconfig-paths/register src/server.ts",
     "dev": "nodemon"
   },
   "nodemonConfig": {
@@ -170,7 +170,6 @@ tsc --init
     "typescript": "^5.9.3"
   }
 }
-
 ```
 
 Sau đó tạo thư mục **SRC** và tạo file nguồn của dự án này với tên app.ts,server.ts hoặc index.ts tùy bạn:

@@ -1,16 +1,18 @@
 import express from "express";
 import "dotenv/config";
-import routes from "routes/api.routes";
+import routes from "routes/tasksRouters";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Middleware to parse JSON and URL-encoded data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Importing the routes
 routes(app);
 
+// Starting the server
 app.listen(PORT, () => {
   console.log(`Server is starting...: ${__dirname}`);
   const url = `http://localhost:${PORT}`;
