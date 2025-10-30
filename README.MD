@@ -212,7 +212,26 @@ export default routes;
 ```
 Chạy `npm run dev` để chạy dự án này và mở nó trong trình duyệt.
 
-- 
+- Cài thu viện Mongo cho Backend:
+```bash
+npm i mongoose
+```
+sau đó tạo thư mục **config** và tạo file db.ts bên trong nó với nội dung code được giải thích bên dưới:
+```bash
+import mongoose from "mongoose";
+import "dotenv/config";
+
+export const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.URL_MONGO || ""); // Connect to MongoDB using the connection string from environment variables
+    console.log("MongoDB connected");
+  } catch (error) {
+    console.error("MongoDB connection error:", error);
+    process.exit(1);// Exit process with failure, with code 1 indicating an error and successful connection is 0
+  }
+};
+
+```
 
 
 
