@@ -22,7 +22,8 @@
   "author": "LianHarman",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "mongoose": "^8.19.2"
   },
   "devDependencies": {
     "@types/express": "^5.0.5",

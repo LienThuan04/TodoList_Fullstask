@@ -1,13 +1,16 @@
 import express from "express";
 import "dotenv/config";
 import routes from "routes/tasksRouters";
-
+import { connectDB } from "config/DB";
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware to parse JSON and URL-encoded data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Connect to the database
+connectDB();
 
 // Importing the routes
 routes(app);
