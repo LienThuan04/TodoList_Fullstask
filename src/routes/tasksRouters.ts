@@ -4,7 +4,7 @@ import { createTask, deleteTask, getAllTasks, updateTask } from "controller/task
 
 const router = Router();
 
-const routes = (app: Express) => {
+const routesTasks = (app: Express) => {
   router.get("/", getAllTasks);
   router.post("/", createTask);
   router.put("/:id", updateTask);
@@ -14,4 +14,4 @@ const routes = (app: Express) => {
 };
 
 
-export default routes;
+export default routesTasks;
