@@ -33,5 +33,18 @@
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.9.3"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LienThuan9697/TodoList_Fullstask.git"
+  },
+  "keywords": [
+    "todo",
+    "todo-backend",
+    "express",
+    "typescript",
+    "rest-api",
+    "jwt",
+    "mongoose"
+  ]
 }
