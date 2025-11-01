@@ -1,8 +1,14 @@
-import { kMaxLength } from "buffer";
 import mongoose from "mongoose";
 
 const taskSchema = new mongoose.Schema(
     {
+        // Reference to the Account that owns/created this task
+        owner: {
+            type: mongoose.Schema.Types.ObjectId, // Owner is an ObjectId
+            ref: 'Account', // Reference to the Account model
+            required: true,
+            index: true, // Index for faster queries on owner field
+        },
         title: {
             type: String, // Title of the task have to be a string
             required: true, // Title is required: cannot be empty

@@ -1,13 +1,17 @@
 import type { Request, Response } from "express";
-import Task from "models/Task.models";
+import { createNewTask, deleteTaskById, getAllTasksByOwner, TaskIsOwner, updateTaskById } from "services/tasks.service";
 
 export const getAllTasks = async (req: Request, res: Response) => {
-  // res.status(200).json({ message: "you have 20 tasks need to be completed", data: [] });
   try {
-    const tasks = await Task.find().sort({ createdAt: 'desc' }); // Retrieve all tasks from the database, sorted by creation date in descending order
+    const ownerId = req.user?.id;
+    if (!ownerId) {
+      return res.status(401).json({ message: "Unauthorized: No owner ID found" });
+    }
+    const tasks = await getAllTasksByOwner(ownerId);
     if (tasks.length === 0) {
       return res.status(200).json({ message: "No tasks found", data: [] });
     }
+    console.log('user:', req.user);
     res.status(200).json({ message: "Tasks retrieved successfully", data: tasks });
   } catch (error) {
     console.error("Error Get All tasks:", error);
@@ -18,12 +22,18 @@ export const getAllTasks = async (req: Request, res: Response) => {
 export const createTask = async (req: Request, res: Response) => {
   try {
     const { title, description } = req.body;
-    const newTask = new Task({ title, description });// Create a new Task instance with the title and description from the request body
-    const savedTask = await newTask.save(); // Save the new task to the database
+    const ownerId = req.user?.id;
+    if (!ownerId) {
+      return res.status(401).json({ message: "Unauthorized: No owner ID found" });
+    }
+    const savedTask = await createNewTask(title, description, ownerId);
+    if (!savedTask) {
+      throw new Error("Task creation failed");
+    }
     res.status(201).json({ message: "Task created successfully", data: savedTask });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error creating task:", error);
-    res.status(500).json({ message: "Error creating task", error: error });
+    res.status(500).json({ message: "Error creating task", error: error.message });
   }
 };
 
@@ -31,18 +41,22 @@ export const updateTask = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const { title, description, status, completedAt } = req.body;
-    const updatedTask = await Task.findByIdAndUpdate(
-      String(id),
-      { title, description, status, completedAt },
-      { new: true },// Return value the updated document, not the value original. if set to false, return the document as it was before the update was applied.
-    );
+    const ownerId = req.user?.id;
+    if (!ownerId) {
+      return res.status(401).json({ message: "Unauthorized: No owner ID found" });
+    }
+    const taskExists = await TaskIsOwner(id, ownerId);
+    if (!taskExists) {
+      return res.status(403).json({ message: "Forbidden: You do not own this task" });
+    }
+    const updatedTask = await updateTaskById(id, { title, description, status, completedAt }, ownerId);
     if (!updatedTask) {
-      return res.status(404).json({ message: `Task with id ${id} not found` });
+      return res.status(404).json({ message: `Update failed: Task with id ${id} not found or not owned by user` });
     } else {
       return res.status(200).json({ message: "Task updated successfully", data: updatedTask });
     }
 
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error updating task:", error);
     return res.status(500).json({ message: "Error updating task", error: error });
   }
@@ -51,9 +65,17 @@ export const updateTask = async (req: Request, res: Response) => {
 export const deleteTask = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const deletedTask = await Task.findByIdAndDelete(String(id));
+    const ownerId = req.user?.id;
+    if (!ownerId) {
+      return res.status(401).json({ message: "Unauthorized: No owner ID found" });
+    }
+    const taskExists = await TaskIsOwner(id, ownerId);
+    if (!taskExists) {
+      return res.status(403).json({ message: "Forbidden: You do not own this task" });
+    }
+    const deletedTask = await deleteTaskById(id, ownerId);
     if (!deletedTask) {
-      return res.status(404).json({ message: `Task with id ${id} not found` });
+      return res.status(404).json({ message: `Delete failed: Task with id ${id} not found or not owned by user` });
     } else {
       return res.status(200).json({ message: "Task deleted successfully", data: deletedTask });
       

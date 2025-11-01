@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { trim } from "zod";
 
 const accountSchema = new mongoose.Schema(
     {

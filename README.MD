@@ -232,8 +232,34 @@ export const connectDB = async () => {
 };
 
 ```
-
-
+# 2 Tạo 1 file debug cho dự án này bằng cách thêm dòng dưới vào file `package.json` như sau:
+```bash
+  "start:debug": "nodemon --inspect=9229 -e ts,tsx --exec node -r ts-node/register -r tsconfig-paths/register ./src/server.ts"
+```
+Và tạo cho file cho visual code để nó có thể chạy trực tiếp lện trên mà không cần gõ thủ công:
+trong file có nội dung như sau:
+```bash
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+     "version": "1.0.0",
+    "configurations": [
+        {
+            "name": "debug",
+            "type": "node",
+            "request": "launch",
+            "cwd": "${workspaceRoot}",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "run",
+                "start:debug"
+            ]
+        }
+    ],
+}
+```
+Hãy nhớ chọn đúng moi trường đang chạy của dự án này trước khi file `lauch.json` của visual code được tạo. 
 
 
 ### Source `Lian Harman`

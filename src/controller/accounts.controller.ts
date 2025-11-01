@@ -1,21 +1,50 @@
 import type { Request, Response } from "express";
-import Account from "models/Account.models";
-import { CreateAccountInput, CreateAccountSchema } from "validation/Accounts.schema";
+import { CreateAccountService, isEmailExist, LoginAccountService } from "services/account.service";
+import { CreateAccountInput, CreateAccountSchema, LoginAccountInput, LoginAccountSchema } from "validation/Accounts.schema";
 
 export const CreateAccount = async (req: Request, res: Response) => {
     try {
-        // validate request body using Zod (safeParseAsync returns { success, data } or { success, error })
         const validateAccount = await CreateAccountSchema.safeParseAsync(req.body);
         if (!validateAccount.success) {
-            const errorZod = validateAccount.error.issues;
-            const errors = errorZod.map((err) => `${err.message} (${err.path.join('.')})`);
+            const errorZod = validateAccount.error.issues; // extract validation issues from Zod error
+            const errors = errorZod.map((err) => `${err.message} (${err.path.join('.')})`); // format errors
             return res.status(400).json({ message: 'Validation errors', errors });
         }
-        const { username, email, password } = validateAccount.data as CreateAccountInput;
-        const newAccount = new Account({ username, email, password });
-        const savedAccount = await newAccount.save();
-        res.status(201).json({ message: "Account created successfully", data: savedAccount });
+        const { username, email, password } = validateAccount.data as CreateAccountInput; // validated data
+        const existingAccount = await isEmailExist(email);
+        if (existingAccount) {
+            return res.status(409).json({ message: "Email already exists" });
+        };
+        const newAccount = await CreateAccountService(username, email, password);
+        if (!newAccount) {
+            throw new Error("Account creation failed");
+        }
+        res.status(201).json({ message: "Account created successfully", data: newAccount });
     } catch (error: any) {
         return res.status(500).json({ message: "Error creating account", error: error });
+    }
+};
+
+export const LoginAccount = async (req: Request, res: Response) => {
+    try {
+        const validateLogin = await LoginAccountSchema.safeParseAsync(req.body);
+        if (!validateLogin.success) {
+            const errorZod = validateLogin.error.issues; // extract validation issues from Zod error
+            const errors = errorZod.map((err) => `${err.message} (${err.path.join('.')})`); // format errors
+            return res.status(400).json({ message: 'Validation errors', errors });
+        }
+        const { email, password } = validateLogin.data as LoginAccountInput; // validated database
+        const isEmailExistAccount = await isEmailExist(email);
+        if (!isEmailExistAccount) {
+            return res.status(404).json({ message: "Email does not exist" });
+        };
+        const accessToken = await LoginAccountService(email, password);
+        if (!accessToken) {
+            return res.status(401).json({ message: "Invalid email or password" });
+        }
+        return res.status(200).json({ message: "Login successful", data: { AccessToken: accessToken } });
+    } catch (error: any) {
+        console.error("Error during login:", error);
+        return res.status(500).json({ message: "Error during login", error: error.message });
     }
 };
