@@ -1,4 +1,4 @@
-# React + TypeScript + Vite
+# React + TypeScript + Vite + TailwindCss + Shadcn + TsConfigPath
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
@@ -218,3 +218,5 @@ Khi chạy lệnh trên nó sẽ hỏi chúng ta dùng giao diện màu gì cho 
 npx shadcn@latest add "component mà bạn muốn cài"
 ```
 `node: lệnh trên trong dấu "" là không có muốn cày component thì bạn chỉ cần xóa 2 "" này và viết tên componet mà bạn muốn tải về`
+
+Sau khi cài component thì trong dự án thư mục `src` sẽ có thêm 1 thư mục `component` và có thư mục `ui` bên trong chứa các component mà bạn đã tải 
