@@ -8,20 +8,15 @@ const RegisterPage = () => {
     const [fullName, setFullName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
 
     function validate() {
-        if (!fullName.trim() || !email.trim() || !password || !confirmPassword) {
+        if (!fullName.trim() || !email.trim() || !password.trim()) {
             toast.error("Please fill in all fields");
             return false;
         }
         if (password.length < 6) {
             toast.error("Password must be at least 6 characters");
-            return false;
-        }
-        if (password !== confirmPassword) {
-            toast.error("Confirm password does not match");
             return false;
         }
         return true;
