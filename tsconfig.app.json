@@ -4,9 +4,10 @@
     "baseUrl": ".", /* Thư mục gốc của dự án */
     "paths": { /* đường dẫn thư mục */
       "@/*": ["src/*"], /* Thư mục src */
-      "pages/*": ["src/pages/*"], /* Thư mục src/pages */
-      "components/*": ["src/components/*"], /* Thư mục src/components */
-      "assets/*": ["src/assets/*"] /* Thư mục src/assets */
+      "@pages/*": ["src/pages/*"], /* Thư mục src/pages */
+      "@components/*": ["src/components/*"], /* Thư mục src/components */
+      "@assets/*": ["src/assets/*"], /* Thư mục src/assets */
+      "@routes/*": ["src/routes/*"] /* Thư mục src/routes */
     },
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
     "target": "ES2022",
