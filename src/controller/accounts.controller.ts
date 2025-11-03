@@ -48,3 +48,18 @@ export const LoginAccount = async (req: Request, res: Response) => {
         return res.status(500).json({ message: "Error during login", error: error.message });
     }
 };
+
+
+export const GetInfoAccount = async (req: Request, res: Response) => {
+    try {
+        const user = req.user;
+        console.log("Retrieved user info:", user);
+        if (!user) {
+            return res.status(401).json({ message: "Unauthorized: User information not found" });
+        }
+        return res.status(200).json({ message: "User info retrieved successfully", data: user });
+    } catch (error: any) {
+        console.error("Error retrieving user info:", error);
+        return res.status(500).json({ message: "Error retrieving user info", error: error.message });
+    }
+};
