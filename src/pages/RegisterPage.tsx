@@ -3,6 +3,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { isEmailValid } from "@pages/LoginPage";
 
 const RegisterPage = () => {
     const [fullName, setFullName] = useState("");
@@ -15,8 +16,12 @@ const RegisterPage = () => {
             toast.error("Please fill in all fields");
             return false;
         }
-        if (password.length < 6) {
-            toast.error("Password must be at least 6 characters");
+        if (!isEmailValid(email)) {
+            toast.error("Please enter a valid email address");
+            return false;
+        }
+        if (password.length < 3) {
+            toast.error("Password must be at least 3 characters");
             return false;
         }
         return true;

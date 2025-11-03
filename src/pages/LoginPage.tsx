@@ -4,16 +4,29 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
-const LoginPage = () => {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [showPassword, setShowPassword] = useState(false);
-    const [remember, setRemember] = useState(false);
+export const isEmailValid = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+};
 
-    function handleSubmit(e: React.FormEvent) {
+const LoginPage = () => {
+    const [email, setEmail] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
+    const [showPassword, setShowPassword] = useState<boolean>(false);
+    const [remember, setRemember] = useState<boolean>(false);
+
+    const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (!email || !password) {
             toast.error("Please fill in all fields");
+            return;
+        }
+        if (!isEmailValid(email)) {
+            toast.error("Please enter a valid email address");
+            return;
+        }
+        if (password.length < 3) {
+            toast.error("Password must be at least 6 characters");
             return;
         }
 
@@ -47,8 +60,8 @@ const LoginPage = () => {
                                         <label className="mb-1 block text-sm font-medium">Email</label>
                                         <Input
                                             type="email"
-                                            value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
+                                            value={email as string}
+                                            onChange={(e) => setEmail(e.target.value as string)}
                                             placeholder="you@example.com"
                                             aria-label="Email"
                                         />
@@ -59,8 +72,8 @@ const LoginPage = () => {
                                         <div className="relative">
                                             <Input
                                                 type={showPassword ? "text" : "password"}
-                                                value={password}
-                                                onChange={(e) => setPassword(e.target.value)}
+                                                value={password as string}
+                                                onChange={(e) => setPassword(e.target.value as string)}
                                                 placeholder="••••••"
                                                 aria-label="Password"
                                             />
@@ -78,8 +91,8 @@ const LoginPage = () => {
                                         <label className="inline-flex items-center gap-2 text-sm">
                                             <input
                                                 type="checkbox"
-                                                checked={remember}
-                                                onChange={(e) => setRemember(e.target.checked)}
+                                                checked={remember as boolean}
+                                                onChange={(e) => setRemember(e.target.checked as boolean)}
                                                 className="h-4 w-4 rounded border bg-background text-primary"
                                             />
                                             <span>Remember Me</span>
