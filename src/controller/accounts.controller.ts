@@ -53,7 +53,7 @@ export const LoginAccount = async (req: Request, res: Response) => {
 export const GetInfoAccount = async (req: Request, res: Response) => {
     try {
         const user = req.user;
-        console.log("Retrieved user info:", user);
+        // console.log("Retrieved user info:", user);
         if (!user) {
             return res.status(401).json({ message: "Unauthorized: User information not found" });
         }

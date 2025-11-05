@@ -8,11 +8,21 @@ export const getAllTasks = async (req: Request, res: Response) => {
       return res.status(401).json({ message: "Unauthorized: No owner ID found" });
     }
     const tasks = await getAllTasksByOwner(ownerId);
-    if (tasks.length === 0) {
-      return res.status(200).json({ message: "No tasks found", data: [] });
+    if (!tasks || !tasks.tasks || tasks.tasks.length === 0) {
+      return res.status(200).json({ message: "No tasks found", data: { tasks: [], pending: 0, activeCount: 0, inProgressCount: 0, completedCount: 0 } });
     }
     console.log('user:', req.user);
-    res.status(200).json({ message: "Tasks retrieved successfully", data: tasks });
+
+    // Normalize counts returned by aggregation facet: empty arrays mean 0
+    const pendingCount: number = tasks.pending?.[0]?.count ?? 0;
+    const activeCount: number = tasks.activeCount?.[0]?.count ?? 0;
+    const inProgressCount: number = tasks.inProgressCount?.[0]?.count ?? 0;
+    const completedCount: number = tasks.completedCount?.[0]?.count ?? 0;
+
+    res.status(200).json({
+      message: "Tasks retrieved successfully",
+      data: { tasks: tasks.tasks, pendingCount, activeCount, inProgressCount, completedCount }
+    });
   } catch (error) {
     console.error("Error Get All tasks:", error);
     res.status(500).json({ message: "Error retrieving tasks", error: error });
