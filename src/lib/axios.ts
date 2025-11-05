@@ -1,6 +1,7 @@
 import axios from "axios";
 import auth from "@lib/auth";
 
+
 // Create a central axios instance for the app. We attach interceptors so that
 // Authorization and token-expiry behavior is centralized in one place.
 const api = axios.create({

@@ -8,11 +8,12 @@ import path from 'path'
 export default defineConfig({
   plugins: [
     react(),
-    tsconfigPaths(), // Sử dụng plugin để hỗ trợ React và đường dẫn từ tsconfig
+    tsconfigPaths(), // Sử dụng plugin để hỗ trợ React và đường dẫn từ tsconfig,
     tailwindcss()],
-    resolve: {
-      alias: {
+    resolve: { // cấu hình alias để sử dụng '@' thay cho './src'
+      alias: { //
         '@': path.resolve(__dirname, './src'),
+        '@types': path.resolve(__dirname, './src/types'),
       }
     }
 })

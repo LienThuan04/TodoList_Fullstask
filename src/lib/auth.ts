@@ -56,7 +56,7 @@ export function parseJwt(token: string | null) {
   } catch (e) {
     return null;
   }
-}
+};
 
 /**
  * Check whether token is currently valid (not expired).
@@ -72,17 +72,17 @@ export function isTokenValid(token?: string | null) {
   // exp might be a number or a numeric string. Also some tokens use ms instead of seconds.
   let exp = payload.exp;
   if (typeof exp === "string" && /^\d+$/.test(exp)) {
-    exp = parseInt(exp, 10);
+    exp = parseInt(exp, 10); // convert numeric string to number
   }
   if (typeof exp !== "number") return false;
 
-  const nowMs = Date.now();
+  const nowMs = Date.now(); // current time in milliseconds
   // if exp looks like milliseconds (>= 1e12) treat as ms, otherwise seconds
   if (exp > 1e12) {
     return exp > nowMs;
   }
   const nowSec = Math.floor(nowMs / 1000);
-  return exp > nowSec;
+  return exp > nowSec; // seconds comparison
 }
 
 export default {

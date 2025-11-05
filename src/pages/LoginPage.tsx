@@ -3,7 +3,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Input } from "@components/ui/input";
 import { Button } from "@components/ui/button";
 import { toast } from "sonner";
-import api from "@lib/api";
+import api from "@lib/axios";
 import auth from "@lib/auth";
 import { useNavigate } from "react-router";
 
@@ -51,7 +51,7 @@ const LoginPage = () => {
 
             // If token is missing, show an error. Do not store non-string data.
             if (!token) {
-                toast.error(res?.data?.message || 'Login failed: token missing');
+                toast.error(res?.data?.error || 'Login failed: token missing');
                 return;
             }
 
@@ -66,7 +66,7 @@ const LoginPage = () => {
         } catch (error: any) {
             // On network/server error show a toast and log details for debugging.
             console.error(error);
-            const msg = error?.response?.data?.message || 'Login failed';
+            const msg = error?.response?.data?.error ? error?.response?.data?.error : error?.response?.data?.message ? error?.response?.data?.message : 'Login failed';
             toast.error(msg);
         }
         // console.log({ email, password, remember });

@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { isEmailValid } from "@pages/LoginPage";
-import api from "@lib/api";
+import api from "@lib/axios";
 
 const RegisterPage = () => {
     const [fullName, setFullName] = useState<string>("");
