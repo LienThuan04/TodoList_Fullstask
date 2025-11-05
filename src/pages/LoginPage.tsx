@@ -1,13 +1,17 @@
 import { useState } from "react";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@components/ui/card";
+import { Input } from "@components/ui/input";
+import { Button } from "@components/ui/button";
 import { toast } from "sonner";
+import api from "@lib/api";
+import auth from "@lib/auth";
+import { useNavigate } from "react-router";
 
-export const isEmailValid = (email: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+export const isEmailValid = (email: string): boolean => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
 };
+
 
 const LoginPage = () => {
     const [email, setEmail] = useState<string>("");
@@ -15,7 +19,9 @@ const LoginPage = () => {
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const [remember, setRemember] = useState<boolean>(false);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const navigate = useNavigate();
+
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!email || !password) {
             toast.error("Please fill in all fields");
@@ -30,9 +36,40 @@ const LoginPage = () => {
             return;
         }
 
-        // TODO: replace with real auth call
-        console.log({ email, password, remember });
-        toast.success("Login successful (stub)");
+        try {
+            // Call backend login endpoint. The server returns an object like:
+            // { message: 'Login successful', data: { AccessToken: 'eyJ...' } }
+            // We call the central `api` instance so it uses the same baseURL
+            // and interceptors that we defined.
+            const res = await api.post('/api/accounts/login', { email, password });
+
+            // Extract token from response. Based on your API example the token
+            // is at res.data.data.AccessToken (capital A). We only check that
+            // exact path here to keep things simple and predictable.
+            const token = res?.data?.data?.AccessToken ?? null;
+            console.log('Login response token:', token);
+
+            // If token is missing, show an error. Do not store non-string data.
+            if (!token) {
+                toast.error(res?.data?.message || 'Login failed: token missing');
+                return;
+            }
+
+            // Save token string in localStorage. After this, api interceptors
+            // will attach it to future requests and ProtectedRoute will allow
+            // navigation because isTokenValid() can parse the JWT payload.
+            auth.setToken(token);
+            toast.success(res?.data?.message || 'Login successful');
+
+            // Redirect the user to the protected home route.
+            navigate('/', { replace: true });
+        } catch (error: any) {
+            // On network/server error show a toast and log details for debugging.
+            console.error(error);
+            const msg = error?.response?.data?.message || 'Login failed';
+            toast.error(msg);
+        }
+        // console.log({ email, password, remember });
     }
 
     return (

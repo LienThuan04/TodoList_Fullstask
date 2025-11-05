@@ -4,14 +4,16 @@
     { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" }
   ],
-  "compilerOptions": { // Shared options
-    // "ignoreDeprecations": "6.0",
-    // "baseUrl": ".",
-    // "paths": {
-    //   "@/*": ["src/*"],
-    //   "@components/*": ["src/components/*"],
-    //   "@pages/*": ["src/pages/*"],
+  // "compilerOptions": { // Shared options
+  //   "ignoreDeprecations": "6.0",
+  //   "baseUrl": ".",
+  //   "paths": {
+  //     // "@/*": ["src/*"],
+  //     // "@components/*": ["src/components/*"],
+  //     // "@pages/*": ["src/pages/*"],
+  //     // "@types/*": ["src/types/*"]
 
-    // }
-  }
+
+  //   }
+  // }
 }

@@ -7,7 +7,9 @@
       "@pages/*": ["src/pages/*"], /* Thư mục src/pages */
       "@components/*": ["src/components/*"], /* Thư mục src/components */
       "@assets/*": ["src/assets/*"], /* Thư mục src/assets */
-      "@routes/*": ["src/routes/*"] /* Thư mục src/routes */
+      "@routes/*": ["src/routes/*"], /* Thư mục src/routes */
+      "@types/*": ["src/types/*"], /* Thư mục src/types */
+      "@lib/*": ["src/lib/*"], /* Thư mục src/lib */
     },
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
     "target": "ES2022",

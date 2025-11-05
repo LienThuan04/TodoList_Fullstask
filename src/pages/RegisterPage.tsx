@@ -1,17 +1,18 @@
 import { useState } from "react";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { isEmailValid } from "@pages/LoginPage";
+import api from "@lib/api";
 
 const RegisterPage = () => {
-    const [fullName, setFullName] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [showPassword, setShowPassword] = useState(false);
+    const [fullName, setFullName] = useState<string>("");
+    const [email, setEmail] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
+    const [showPassword, setShowPassword] = useState<boolean>(false);
 
-    function validate() {
+    const validate = () => {
         if (!fullName.trim() || !email.trim() || !password.trim()) {
             toast.error("Please fill in all fields");
             return false;
@@ -27,14 +28,19 @@ const RegisterPage = () => {
         return true;
     }
 
-    function handleSubmit(e: React.FormEvent) {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!validate()) return;
-
         // TODO: call registration API here
-        console.log({ fullName, email, password });
-        toast.success("Registration successful (stub)");
-        // Optionally clear form or redirect
+        try {
+            const req = await api.post('/api/accounts/register', { username: fullName, email, password });
+            if (req.status === 201 && req.data) {
+                toast.success(`${req.data.message || 'Registration successful'}`);
+            }
+        } catch (error) {
+            console.error("Registration error:", error);
+            toast.error("Registration failed");
+        };
     }
 
     return (
