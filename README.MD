@@ -261,6 +261,23 @@ trong file có nội dung như sau:
 ```
 Hãy nhớ chọn đúng moi trường đang chạy của dự án này trước khi file `lauch.json` của visual code được tạo. 
 
+# Thêm Cors cho dự án để khi frontend gọi ở cổng khác thì không bị báo lỗi khi khác Port
+```bash
+npm i cors
+```
+```bash
+npm i @types/cors -D
+```
+Sau đó thì `import cors from "cors";` vào file `sever.ts` thêm nội dung sau:
+```bash
+//middleware config cors
+app.use(cors(
+  {
+    origin: ['http://localhost:5174', 'http://localhost:5173'],
+  }
+));
+```
+
 
 ### Source `Lian Harman`
 

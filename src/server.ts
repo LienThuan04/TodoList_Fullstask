@@ -3,12 +3,22 @@ import "dotenv/config";
 import { connectDB } from "config/db";
 import routesTasks from "routes/tasksRouters";
 import routesAccounts from "routes/account.Routers";
+import cors from "cors";
+
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware to parse JSON and URL-encoded data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+//middleware cors
+app.use(cors(
+  {
+    origin: ['http://localhost:5174', 'http://localhost:5173'],
+  }
+));
 
 // Importing the routes
 routesTasks(app);
