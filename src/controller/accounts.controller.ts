@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { CreateAccountService, isEmailExist, LoginAccountService, setAvatarForAccount } from "services/account.service";
+import { CreateAccountService, getAvatarOfAccount, isEmailExist, LoginAccountService, setAvatarForAccount } from "services/account.service";
 import { CreateAccountInput, CreateAccountSchema, LoginAccountInput, LoginAccountSchema } from "validation/Accounts.schema";
 
 export const CreateAccount = async (req: Request, res: Response) => {
@@ -86,5 +86,22 @@ export const setAvatar = async (req: Request, res: Response) => {
     } catch (error: any) {
         console.error("Error setting avatar:", error);
         return res.status(500).json({ message: "Error setting avatar", error: error.message });
+    }
+};
+
+export const GetImgAvatarAccount = async (req: Request, res: Response) => {
+    try {
+        const user = req.user;
+        if (!user) {
+            return res.status(401).json({ message: "Unauthorized: User information not found" });
+        }
+        const avatar = await getAvatarOfAccount(user.id);
+        if (!avatar) {
+            return res.status(404).json({ message: "Avatar not found" });
+        }
+        return res.status(200).json({ message: "Avatar retrieved successfully", data: { avatar: avatar } });
+    } catch (error: any) {
+        console.error("Error retrieving avatar:", error);
+        return res.status(500).json({ message: "Error retrieving avatar", error: error.message });
     }
 };

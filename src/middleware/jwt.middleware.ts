@@ -30,7 +30,6 @@ const checkJwt = (req: Request, res: Response, next: NextFunction) => {
                 id: (decoded as any).id,
                 email: (decoded as any).email,
                 username: (decoded as any).username,
-                avatar: (decoded as any).avatar ? (decoded as any).avatar : null
             } as User; // Type assertion to User in folder types file index.dt.ts
             next();
         });

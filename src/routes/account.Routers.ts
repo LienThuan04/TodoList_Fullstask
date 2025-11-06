@@ -1,4 +1,4 @@
-import { CreateAccount, GetInfoAccount, LoginAccount, setAvatar } from "controller/accounts.controller";
+import { CreateAccount, GetImgAvatarAccount, GetInfoAccount, LoginAccount, setAvatar } from "controller/accounts.controller";
 import type { Express } from "express";
 import { Router } from "express";
 import checkJwt from "middleware/jwt.middleware";
@@ -10,6 +10,7 @@ const routesAccounts = (app: Express) => {
     router.post("/register", CreateAccount);
     router.post("/login", LoginAccount);
     router.post("/avatar", fileUploadAvatar('avatar', '/avatars'), setAvatar);
+    router.get("/avatar", GetImgAvatarAccount);
     app.use("/api/accounts", checkJwt, router);
 };
 

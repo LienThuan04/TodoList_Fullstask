@@ -27,7 +27,6 @@ export const LoginAccountService = async (email: string, password: string) => {
         id: account._id,
         email: account.email,
         username: account.username,
-        avatar: account?.avatar ? account.avatar : null
     };
     const secretKey = process.env.JWT_SECRET;
     if (!secretKey) {
@@ -46,4 +45,9 @@ export const setAvatarForAccount = async (userId: string, avatarPath: string) =>
         { new: true } // Return the updated document
     );
     return updatedAccount;
+};
+
+export const getAvatarOfAccount = async (userId: string) => {
+    const account = await Account.findById(userId).select('avatar');
+    return account ? account.avatar : null;
 };
