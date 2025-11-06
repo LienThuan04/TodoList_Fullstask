@@ -386,5 +386,5 @@ NODE_ENV="development"
 BCRYPT_SALT_ROUNDS=10
 
 ```
-### Source `Lian Harman`
+### Copyright belongs to [LianHarman](https://www.facebook.com/LianHarman/)
 
