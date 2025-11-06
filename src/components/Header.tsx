@@ -4,7 +4,7 @@ import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, Dialog
 import { Button } from "@components/ui/button";
 import { LogOut } from "lucide-react";
 import { toast } from "sonner";
-import api, { domain } from "@/lib/axios";
+import api, { domain } from "@lib/axios";
 
 const Header = () => {
     const [name, setName] = useState<string | null>(null);
