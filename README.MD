@@ -362,8 +362,11 @@ Khi tạo router.post thì middleware nằm như sau:
 ```bash
 router.post("/avatar", fileUploadAvatar('avatar', '/avatars'), setAvatar);
 ```
-Với `avatar` trong `fileUploadAvatar` là key khi truyền file với request được gọi còn `/avatars` là thư mục lưu file đó tại sever
-
+Với `avatar` trong `fileUploadAvatar` là key khi truyền file với request được gọi còn `/avatars` là thư mục lưu file đó tại sever, và để lấy được tên file đó để lưu vào database thì chỉ cần gọi lấy:
+```bash
+req.file?.filename;
+```
+thì sẽ lấy được do file được gửi chung với request.
 
 
 ### Source `Lian Harman`
