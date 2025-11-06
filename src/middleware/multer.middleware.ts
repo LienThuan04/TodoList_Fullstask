@@ -3,7 +3,7 @@ import path from 'path'
 import { v4 } from 'uuid';
 
 
-const fileUploadMiddleware = (fieldName: string /* tên trường file */, dir: string = 'images' /* thư mục lưu trữ */) => {
+const fileUploadAvatar = (fieldName: string /* tên trường file */, dir: string = 'images' /* thư mục lưu trữ */) => {
     return multer({
         storage: multer.diskStorage({
             destination: 'public/' + dir,// cấu hình nới lưu trữ file với thư mục public và dir là thư mục con
@@ -65,4 +65,4 @@ const FileUploadFields = (fields: {name: string, maxCount: number}[], dir?: stri
     }).fields(fields);
 };
 
-export { fileUploadMiddleware, FileUploadFields };
+export { fileUploadAvatar, FileUploadFields };

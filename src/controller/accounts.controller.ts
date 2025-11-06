@@ -73,7 +73,7 @@ export const setAvatar = async (req: Request, res: Response) => {
         }
         // Here you would typically handle the avatar upload and update the user's profile
         // For demonstration, we'll just return a success message
-        const avatarPath = req.file?.path; // Assuming file upload middleware sets req.file
+        const avatarPath = req.file?.filename; // Assuming file upload middleware sets req.file
         if (!avatarPath) {
             return res.status(400).json({ message: "No avatar file uploaded" });
         }
