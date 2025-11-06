@@ -163,18 +163,35 @@ const TaskCard = ({ task, index, fetchTasks }: { task: Itasks; index: number; fe
 
 
                     {!isEditting && (
-                        <div className="hidden gap-2 group-hover:inline-flex animate-slide-up">
-                            <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-info transition-all duration-200"
-                                onClick={() => { setIsEditting(true); setUpdatedTitle(task.title || ""); setUpdatedDescription(task.description || ""); }}
-                            >
-                                <SquarePen className="size-5" />
-                            </Button>
-                            <Button variant="ghost" size="icon" className="shrink-0 text-muted-foreground hover:text-destructive transition-all duration-200"
-                                onClick={() => handleDelTask(task._id!)}
-                            >
-                                <Trash className="size-5" />
-                            </Button>
-                        </div>
+                        <>
+                            {/* Mobile: always visible (no hover on touch) */}
+                            <div className="flex gap-2 sm:hidden">
+                                <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-info transition-all duration-200"
+                                    onClick={() => { setIsEditting(true); setUpdatedTitle(task.title || ""); setUpdatedDescription(task.description || ""); }}
+                                >
+                                    <SquarePen className="size-5" />
+                                </Button>
+                                <Button variant="ghost" size="icon" className="shrink-0 text-muted-foreground hover:text-destructive transition-all duration-200"
+                                    onClick={() => handleDelTask(task._id!)}
+                                >
+                                    <Trash className="size-5" />
+                                </Button>
+                            </div>
+
+                            {/* Desktop: show on group hover */}
+                            <div className="hidden gap-2 sm:group-hover:inline-flex animate-slide-up">
+                                <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-info transition-all duration-200"
+                                    onClick={() => { setIsEditting(true); setUpdatedTitle(task.title || ""); setUpdatedDescription(task.description || ""); }}
+                                >
+                                    <SquarePen className="size-5" />
+                                </Button>
+                                <Button variant="ghost" size="icon" className="shrink-0 text-muted-foreground hover:text-destructive transition-all duration-200"
+                                    onClick={() => handleDelTask(task._id!)}
+                                >
+                                    <Trash className="size-5" />
+                                </Button>
+                            </div>
+                        </>
                     )}
             </div>
         </Card>

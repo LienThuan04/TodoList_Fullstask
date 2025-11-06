@@ -85,10 +85,20 @@ export function isTokenValid(token?: string | null) {
   return exp > nowSec; // seconds comparison
 }
 
+export const getAvatar = (): string | null => {
+  const token: string | null = getToken();
+  const payload: any = parseJwt(token);
+  if (payload && payload.avatar) {
+    return payload.avatar;
+  }
+  return null;
+};
+
 export default {
   setToken,
   getToken,
   removeToken,
+  getAvatar,
   parseJwt,
   isTokenValid,
 };

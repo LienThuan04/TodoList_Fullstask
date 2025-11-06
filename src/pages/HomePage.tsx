@@ -9,23 +9,45 @@ import TaskList from "@components/TaskList";
 import { useEffect, useState } from "react";
 import api from "@lib/axios";
 import type { Itasks } from "@/types/Type.dt";
+import { visibleTasksLimit } from "@/lib/data";
 
 const HomePage = () => {
     const [StateBuffer, setStateBuffer] = useState<Itasks[]>([]);
-    const [NumberStatusTasks, setNumberStatusTasks] = useState<{ 
-        pendingCount: number; activeCount: number; inProgressCount: number; completedCount: number 
-    }>({ 
-        pendingCount: 0, activeCount: 0, inProgressCount: 0, completedCount: 0 
+    const [NumberStatusTasks, setNumberStatusTasks] = useState<{
+        pendingCount: number; activeCount: number; inProgressCount: number; completedCount: number
+    }>({
+        pendingCount: 0, activeCount: 0, inProgressCount: 0, completedCount: 0
     });
     const [filter, setFilter] = useState<string>('ALL');
+    const [dateFilterQuery, setDateFilterQuery] = useState<string>('all_time');
+    const [currentPage, setCurrentPage] = useState<number>(1);
+
+    const handleNextPage = () => {
+        if (currentPage < totalPages) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
+    const handlePrevPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
+
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page);
+    };
 
     useEffect(() => {
         fetchTasks();
-    }, []);
+    }, [dateFilterQuery]);
+
+    useEffect(() => {
+        setCurrentPage(1); // reset to first page when filter or date changes
+    }, [filter, dateFilterQuery]);
 
     const fetchTasks = async () => {
         try {
-            const res = await api.get("/api/tasks");
+            const res = await api.get(`/api/tasks?filterDate=${dateFilterQuery}`);
             const TasksList = res.data.data.tasks as Itasks[];
             setNumberStatusTasks({
                 pendingCount: res.data.data?.pendingCount ? res.data.data?.pendingCount : 0,
@@ -40,10 +62,10 @@ const HomePage = () => {
             toast.error("Failed to fetch tasks");
         }
     };
-    
+
 
     //filter tasks based on status
-    const filterTasks = StateBuffer.filter((task) => { // dùng biến mà không dùng state trực tiếp để tránh re-render không cần thiết và biến luôn lấy lại được giá trị mới nhất
+    const filteredTasks = StateBuffer.filter((task) => { // dùng biến mà không dùng state trực tiếp để tránh re-render không cần thiết và biến luôn lấy lại được giá trị mới nhất
         switch (filter) {
             case 'PENDING':
                 return task.status === 'pending';
@@ -57,6 +79,27 @@ const HomePage = () => {
                 return true;
         }
     });
+
+    // compute paging based on filtered tasks (important: use filtered length, not full buffer)
+    const totalPages = Math.ceil(filteredTasks.length / visibleTasksLimit);
+
+    // clamp page when filtered set changes
+    useEffect(() => {
+        if (totalPages === 0) {
+            setCurrentPage(1);
+        } else if (currentPage > totalPages) {
+            setCurrentPage(totalPages);
+        }
+    }, [totalPages]);
+
+    const visibleTasks = filteredTasks.slice( // lấy ra các task của trang hiện tại
+        (currentPage - 1) * visibleTasksLimit,
+        currentPage * visibleTasksLimit
+    );
+
+    if (visibleTasks.length === 0) { // nếu trang hiện tại không có task nào thì quay về trang trước
+        handlePrevPage();
+    }
 
     return (
         <div className="min-h-screen w-full bg-[#0f0f0f] relative text-white">
@@ -81,10 +124,16 @@ const HomePage = () => {
                     </button>
                     <AddTask fetchTasks={fetchTasks} />
                     <StatsAndFilters NumberStatusTasks={NumberStatusTasks} filterType={filter} setFilter={setFilter} />
-                    <TaskList filteredTasks={filterTasks} fetchTasks={fetchTasks}/>
+                    <TaskList filteredTasks={visibleTasks} fetchTasks={fetchTasks} />
                     <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
-                        <TaskListPagination />
-                        <DateTimeFilter />
+                        <TaskListPagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            onPageChange={handlePageChange}
+                            onNextPage={handleNextPage}
+                            onPrevPage={handlePrevPage}
+                        />
+                        <DateTimeFilter dateFilterQuery={dateFilterQuery} setDateFilterQuery={setDateFilterQuery} />
                     </div>
                     <Footer Pending={NumberStatusTasks.pendingCount}
                         Active={NumberStatusTasks.activeCount}

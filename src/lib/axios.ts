@@ -1,11 +1,13 @@
 import axios from "axios";
 import auth from "@lib/auth";
 
+export const domain: string = "http://localhost:5001";
+
 
 // Create a central axios instance for the app. We attach interceptors so that
 // Authorization and token-expiry behavior is centralized in one place.
 const api = axios.create({
-  baseURL: "http://localhost:5001",
+  baseURL: domain as string,
   headers: {
     "Content-Type": "application/json",
   },
@@ -53,7 +55,9 @@ api.interceptors.response.use(
   (err) => {
     if (err?.response?.status === 401) {
       auth.removeToken();
-      if (typeof window !== "undefined") window.location.href = "/login";
+      setTimeout(() => {
+        if (typeof window !== "undefined") window.location.href = "/login";
+      }, 2000);
     }
     return Promise.reject(err);
   }
