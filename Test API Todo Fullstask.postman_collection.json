@@ -26,13 +26,19 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{BaseURL}}/api/tasks",
+							"raw": "{{BaseURL}}/api/tasks?filterDate=today",
 							"host": [
 								"{{BaseURL}}"
 							],
 							"path": [
 								"api",
 								"tasks"
+							],
+							"query": [
+								{
+									"key": "filterDate",
+									"value": "today"
+								}
 							]
 						}
 					},
@@ -150,7 +156,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MDU5MjA5NzFiMGNlMDliZGUwMzg0OSIsImVtYWlsIjoidGh1YW4yMDA0QGdtYWlsLmNvbSIsInVzZXJuYW1lIjoidGVzdCAzIiwiaWF0IjoxNzYyMzQyMTM4LCJleHAiOjE3NjI0Mjg1Mzh9.-iDpljAXZF4WI2I-GF_ZoDmH_j715r9zw4Szss9Rnak",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MDU5MjA5NzFiMGNlMDliZGUwMzg0OSIsImVtYWlsIjoidGh1YW4yMDA0QGdtYWlsLmNvbSIsInVzZXJuYW1lIjoidGVzdCAzIiwiYXZhdGFyIjoiMGMzNDdjYWYtNTdlNC00ODI5LThlNDEtNDIyYjQ2ODBjNGEzLmpwZyIsImlhdCI6MTc2MjQyODU1NCwiZXhwIjoxNzYyNTE0OTU0fQ.vZ9SvgB9o-MDr6y1c-bGvfnSR7g6DTaafW88jBAFxWI",
 									"type": "string"
 								}
 							]
@@ -253,7 +259,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MDVlMTEwMGE4Y2I1ZDAxMmQ2Yzg2MyIsImVtYWlsIjoidGh1YW5saWVuQGdtYWlsLmNvbSIsInVzZXJuYW1lIjoidGVzdCAxIiwiaWF0IjoxNzYyMTU4Nzc0LCJleHAiOjE3NjIyNDUxNzR9.aI-F95WXO8iY2pOFzlPCJzDSZvLuOEudWMWUyMzUJ",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MDU5MjA5NzFiMGNlMDliZGUwMzg0OSIsImVtYWlsIjoidGh1YW4yMDA0QGdtYWlsLmNvbSIsInVzZXJuYW1lIjoidGVzdCAzIiwiYXZhdGFyIjoiMGMzNDdjYWYtNTdlNC00ODI5LThlNDEtNDIyYjQ2ODBjNGEzLmpwZyIsImlhdCI6MTc2MjQyODU1NCwiZXhwIjoxNzYyNTE0OTU0fQ.vZ9SvgB9o-MDr6y1c-bGvfnSR7g6DTaafW88jBAFxWI",
 									"type": "string"
 								}
 							]
@@ -273,6 +279,35 @@
 								"api",
 								"accounts",
 								"infor"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get avatar",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MDU5MjA5NzFiMGNlMDliZGUwMzg0OSIsImVtYWlsIjoidGh1YW4yMDA0QGdtYWlsLmNvbSIsInVzZXJuYW1lIjoidGVzdCAzIiwiYXZhdGFyIjoiMGMzNDdjYWYtNTdlNC00ODI5LThlNDEtNDIyYjQ2ODBjNGEzLmpwZyIsImlhdCI6MTc2MjQyODU1NCwiZXhwIjoxNzYyNTE0OTU0fQ.vZ9SvgB9o-MDr6y1c-bGvfnSR7g6DTaafW88jBAFxWI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/api/accounts/avatar",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"api",
+								"accounts",
+								"avatar"
 							]
 						}
 					},
