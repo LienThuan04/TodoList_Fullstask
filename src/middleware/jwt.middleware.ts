@@ -2,12 +2,13 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import "dotenv/config";
 import { User } from "types/index.dt";
+import { object } from "zod";
 
 const checkJwt = (req: Request, res: Response, next: NextFunction) => {
     const path = req.path;
     const whitelist = [
-        "/api/accounts/login",
-        "/api/accounts/register",
+        "/login",
+        "/register",
     ];
     const isWhitelisted = whitelist.includes(path);
     console.log("Request Path:", path, "Is Whitelisted:", isWhitelisted);
@@ -28,7 +29,8 @@ const checkJwt = (req: Request, res: Response, next: NextFunction) => {
             req.user = {
                 id: (decoded as any).id,
                 email: (decoded as any).email,
-                username: (decoded as any).username
+                username: (decoded as any).username,
+                avatar: (decoded as any).avatar ? (decoded as any).avatar : null
             } as User; // Type assertion to User in folder types file index.dt.ts
             next();
         });

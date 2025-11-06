@@ -26,7 +26,8 @@ export const LoginAccountService = async (email: string, password: string) => {
     const payload = {
         id: account._id,
         email: account.email,
-        username: account.username
+        username: account.username,
+        avatar: account?.avatar ? account.avatar : null
     };
     const secretKey = process.env.JWT_SECRET;
     if (!secretKey) {
