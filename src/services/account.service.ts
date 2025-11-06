@@ -37,3 +37,12 @@ export const LoginAccountService = async (email: string, password: string) => {
 
     return accessToken;
 };
+
+export const setAvatarForAccount = async (userId: string, avatarPath: string) => {
+    const updatedAccount = await Account.findByIdAndUpdate(
+        userId,
+        { avatar: avatarPath },
+        { new: true } // Return the updated document
+    );
+    return updatedAccount;
+};

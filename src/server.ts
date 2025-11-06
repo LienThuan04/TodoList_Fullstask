@@ -4,6 +4,7 @@ import { connectDB } from "config/db";
 import routesTasks from "routes/tasksRouters";
 import routesAccounts from "routes/account.Routers";
 import cors from "cors";
+import path from "path";
 
 
 const app = express();
@@ -19,6 +20,14 @@ app.use(cors(
     origin: ['http://localhost:5174', 'http://localhost:5173'],
   }
 ));
+
+
+// Serve static files for avatars public/avatars
+app.use("/avatars", express.static(path.join(process.cwd(), "public", "avatars"))); // serve files from project-root/public/avatars
+// Note: avoid leading '/' in path.join segments because that makes the segment absolute
+// and ignores the previous parts. Use process.cwd() (project root) or __dirname + '..' when
+// resolving a path relative to the source file.
+
 
 // Importing the routes
 routesTasks(app);

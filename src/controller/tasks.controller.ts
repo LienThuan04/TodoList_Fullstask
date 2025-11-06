@@ -2,12 +2,41 @@ import type { Request, Response } from "express";
 import { createNewTask, deleteTaskById, getAllTasksByOwner, TaskIsOwner, updateTaskById } from "services/tasks.service";
 
 export const getAllTasks = async (req: Request, res: Response) => {
+  const ownerId = req.user?.id;
+  const { filterDate = 'all_time' }: { filterDate?: string } = req.query;
+  const now: Date = new Date();
+  let startDate: Date | null = null;
+
+  switch (filterDate) {
+    case 'today': {
+      startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate()); // 11/08/2024 00:00:00
+      break;
+    };
+    case 'this_week': {
+      const mondayDate = now.getDate() - (now.getDay() - 1) - (now.getDay() === 0 ? 7 : 0);
+      startDate = new Date(now.getFullYear(), now.getMonth(), mondayDate); // Set to the most recent Monday
+      break;
+    };
+    case 'this_month': {
+      startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+      break;
+    };
+    case 'this_year': {
+      startDate = new Date(now.getFullYear(), 0, 1);
+      break;
+    };
+    case 'all_time':
+    default: {
+      startDate = null; // No date filtering
+      break;
+    };
+  };
+
   try {
-    const ownerId = req.user?.id;
     if (!ownerId) {
       return res.status(401).json({ message: "Unauthorized: No owner ID found" });
     }
-    const tasks = await getAllTasksByOwner(ownerId);
+    const tasks = await getAllTasksByOwner(ownerId, startDate);
     if (!tasks || !tasks.tasks || tasks.tasks.length === 0) {
       return res.status(200).json({ message: "No tasks found", data: { tasks: [], pending: 0, activeCount: 0, inProgressCount: 0, completedCount: 0 } });
     }
@@ -88,7 +117,7 @@ export const deleteTask = async (req: Request, res: Response) => {
       return res.status(404).json({ message: `Delete failed: Task with id ${id} not found or not owned by user` });
     } else {
       return res.status(200).json({ message: "Task deleted successfully", data: deletedTask });
-      
+
     }
   } catch (error) {
     console.error("Error deleting task:", error);

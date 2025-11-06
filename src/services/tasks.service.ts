@@ -5,11 +5,12 @@ export const createNewTask = async (title: string, description: string, owner: s
     const newTask = new Task({ title, description, owner });
     return await newTask.save();
 };
-export const getAllTasksByOwner = async (owner: string): Promise<{ tasks: any[], pending: any[], activeCount: any[], inProgressCount: any[], completedCount: any[] }> => {
+export const getAllTasksByOwner = async (owner: string, startDate: Date | null): Promise<{ tasks: any[], pending: any[], activeCount: any[], inProgressCount: any[], completedCount: any[] }> => {
     // ensure owner is an ObjectId when stored as ObjectId in the Task schema
     const ownerId = new mongoose.Types.ObjectId(owner);
+    const queryDateFilter = startDate ? { createdAt: { $gte: startDate } } : {};
     const result = await Task.aggregate([
-        { $match: { owner: ownerId } },
+        { $match: { owner: ownerId, ...queryDateFilter } },
         {
             $facet: {
                 tasks: [

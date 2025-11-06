@@ -1,14 +1,16 @@
-import { CreateAccount, GetInfoAccount, LoginAccount } from "controller/accounts.controller";
+import { CreateAccount, GetInfoAccount, LoginAccount, setAvatar } from "controller/accounts.controller";
 import type { Express } from "express";
 import { Router } from "express";
 import checkJwt from "middleware/jwt.middleware";
+import { fileUploadMiddleware } from "middleware/multer.middleware";
 
 const router = Router();
 const routesAccounts = (app: Express) => {
-    router.get("/infor",checkJwt , GetInfoAccount);
+    router.get("/infor", GetInfoAccount);
     router.post("/register", CreateAccount);
     router.post("/login", LoginAccount);
-    app.use("/api/accounts", router);
+    router.post("/avatar", fileUploadMiddleware('avatar', '/avatars'), setAvatar);
+    app.use("/api/accounts", checkJwt, router);
 };
 
 export default routesAccounts;

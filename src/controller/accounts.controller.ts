@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { CreateAccountService, isEmailExist, LoginAccountService } from "services/account.service";
+import { CreateAccountService, isEmailExist, LoginAccountService, setAvatarForAccount } from "services/account.service";
 import { CreateAccountInput, CreateAccountSchema, LoginAccountInput, LoginAccountSchema } from "validation/Accounts.schema";
 
 export const CreateAccount = async (req: Request, res: Response) => {
@@ -61,5 +61,30 @@ export const GetInfoAccount = async (req: Request, res: Response) => {
     } catch (error: any) {
         console.error("Error retrieving user info:", error);
         return res.status(500).json({ message: "Error retrieving user info", error: error.message });
+    }
+};
+
+
+export const setAvatar = async (req: Request, res: Response) => {
+    try {
+        const user = req.user;
+        if (!user) {
+            return res.status(401).json({ message: "Unauthorized: User information not found" });
+        }
+        // Here you would typically handle the avatar upload and update the user's profile
+        // For demonstration, we'll just return a success message
+        const avatarPath = req.file?.path; // Assuming file upload middleware sets req.file
+        if (!avatarPath) {
+            return res.status(400).json({ message: "No avatar file uploaded" });
+        }
+        // Update the user's avatar in the database
+        const updatedAccount = await setAvatarForAccount(user.id, avatarPath);
+        if (!updatedAccount) {
+            throw new Error("Failed to set avatar");
+        }
+        return res.status(200).json({ message: "Avatar set successfully", data: updatedAccount });
+    } catch (error: any) {
+        console.error("Error setting avatar:", error);
+        return res.status(500).json({ message: "Error setting avatar", error: error.message });
     }
 };
