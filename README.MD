@@ -368,6 +368,23 @@ req.file?.filename;
 ```
 thì sẽ lấy được do file được gửi chung với request.
 
+## file .env:
+```bash
+# Server Configuration
+PORT=3000
+# MongoDB Configuration password
+PASSWORD_MONGO=""
+# DATA Base Configuration
+URL_MONGO="mongodb+srv://DB_ToDoList_FullStask:<db_password>@cluster0.1ft6ibj.mongodb.net/?appName=Cluster0"
+# JWT Configuration
+JWT_SECRET="LienThuan206283"
+# 1 day
+JWT_EXPIRES_IN="1d"
+NODE_ENV="development"
 
+# Bcrypt Configuration
+BCRYPT_SALT_ROUNDS=10
+
+```
 ### Source `Lian Harman`
 
