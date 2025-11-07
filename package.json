@@ -3,13 +3,24 @@
   "version": "1.0.0",
   "description": "todo fullstask",
   "main": "dist/index.js",
+  "type": "commonjs",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "ts-node -r tsconfig-paths/register src/server.ts",
     "dev": "nodemon",
     "start:debug": "nodemon --inspect=9229 -e ts,tsx --exec node -r ts-node/register -r tsconfig-paths/register ./src/server.ts",
     "build": "tsc -p tsconfig.build.json",
-    "start:prod": "npm run build && set \"NODE_PATH=dist\" && node dist/server.js"
+    "start:prod": "npm run build && node -r module-alias/register dist/server.js"
+  },
+  "_moduleAliases": {
+    "config": "dist/config",
+    "routes": "dist/routes",
+    "controller": "dist/controller",
+    "models": "dist/models",
+    "middleware": "dist/middleware",
+    "validation": "dist/validation",
+    "services": "dist/services",
+    "types": "dist/types"
   },
   "nodemonConfig": {
     "watch": [
@@ -28,8 +39,10 @@
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "express": "^4.18.2",
+    "module-alias": "^2.2.3",
     "mongoose": "^8.19.2",
     "multer": "^2.0.2",
+    "todofullstask": "file:..",
     "uuid": "^13.0.0",
     "zod": "^4.1.12"
   },

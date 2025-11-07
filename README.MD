@@ -388,10 +388,39 @@ BCRYPT_SALT_ROUNDS=10
 ```
 
 # Build project để deloy bằng cách setup như sau:
+- đầu tiên cần cài npm `module-alias` cho **package.json**:
+```bash
+npm i module-alias
+```
+Sau đó thêm kiểu type cho `package.json` như bên dưới:
+```bash
+{
+  "name": "backend-todo",
+  "version": "1.0.0",
+  "description": "todo fullstask",
+  "main": "dist/index.js",
+  "type": "commonjs",
+}
+```
+Thêm đường dẫn ánh xạ do `Tsconfigpath` chỉ chạy được khi có type còn khi deloy hoặc build thì nó chạy bằng javascript nên nó không hiểu được đường dẫn đó nên ta cần định nghĩa chúng lại để file chạy được bình thường (nhìn vào thư mục dist sau khi buid khai báo như bên dưới là chạy bth không bị lỗi đường dẫn nữa):
+```bash
+"_moduleAliases": {
+    "config": "dist/config",
+    "routes": "dist/routes",
+    "controller": "dist/controller",
+    "models": "dist/models",
+    "middleware": "dist/middleware",
+    "validation": "dist/validation",
+    "services": "dist/services",
+    "types": "dist/types"
+  },
+```
+- file `sever.ts` sửa lại __dirname do node đã cung cấp nên không cần định nghĩa lại(nếu định nghĩa lại -> lỗi!!)
+
 - Sửa file `package.json` thêm dòng dưới này vào **scripts** để tạo file build và chạy file build đó:
 ```bash
 "build": "tsc -p tsconfig.build.json",
-"start:prod": "npm run build && set \"NODE_PATH=dist\" && node dist/server.js"
+"start:prod": "npm run build && node -r module-alias/register dist/server.js"
 ```
 - Nhớ thêm file `tsconfig.build.json` với nội dung như bên dưới:
 ```bash
@@ -422,6 +451,15 @@ BCRYPT_SALT_ROUNDS=10
   "exclude": ["node_modules", "dist"]
 }
 ```
+- Sau đó chạy câu lệnh theo bước bên dưới:
+```bash
+npm run build
+```
+Sau khi build xong để chạy dự án đã build thư mục `dist` dùng câu lênh:
+```bash
+npm run start:prod
+```
+
 - Cuối cùng là đem đi deloy thôi!!!
 
 

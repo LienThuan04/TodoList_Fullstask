@@ -9,7 +9,8 @@ import path from "path";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const __dirname = path.resolve();
+// sử dụng tên biến cục bộ để tránh khai báo lại __dirname do Node cung cấp
+const projectRoot = path.resolve();
 
 // Middleware to parse JSON and URL-encoded data
 app.use(express.json());
@@ -19,7 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 if (process.env.NODE_ENV !== "production") {
   app.use(cors(
   {
-    origin: ['http://localhost:5174', 'http://localhost:5173'],
+    origin: ['http://localhost:5174', 'http://localhost:5173'], // Thay đổi theo cổng frontend của bạn ở local
   }
 ));
 }
@@ -38,9 +39,9 @@ routesAccounts(app);
 
 // config frontend build files
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "../Frontend/dist")));
+  app.use(express.static(path.join(projectRoot, "../Frontend/dist")));
   app.get('*', (req: express.Request, res: express.Response) => {
-    res.sendFile(path.join(__dirname, "../Frontend/dist/index.html"));
+    res.sendFile(path.join(projectRoot, "../Frontend/dist/index.html"));
   }
   );
 
@@ -49,7 +50,7 @@ if (process.env.NODE_ENV === "production") {
 connectDB().then(() => {
   // Starting the server after successful DB connected
   app.listen(PORT, () => {
-    console.log(`Server is starting...: ${__dirname}`);
+    console.log(`Server is starting...: ${projectRoot}`);
     const url = `http://localhost:${PORT}`;
     console.log(`Server is running on PORT: \x1b[32m\u001b]8;;${url}\u0007${url}\u001b]8;;\u0007\x1b[0m`);
   });
