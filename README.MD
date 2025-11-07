@@ -386,5 +386,44 @@ NODE_ENV="development"
 BCRYPT_SALT_ROUNDS=10
 
 ```
+
+# Build project để deloy bằng cách setup như sau:
+- Sửa file `package.json` thêm dòng dưới này vào **scripts** để tạo file build và chạy file build đó:
+```bash
+"build": "tsc -p tsconfig.build.json",
+"start:prod": "npm run build && set \"NODE_PATH=dist\" && node dist/server.js"
+```
+- Nhớ thêm file `tsconfig.build.json` với nội dung như bên dưới:
+```bash
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "rootDir": "src",
+    "outDir": "dist",
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "noEmit": false,
+    "baseUrl": "./",
+    "paths": {
+      "routes/*": ["./src/routes/*"],
+      "controller/*": ["./src/controller/*"],
+      "config/*": ["./src/config/*"],
+      "models/*": ["./src/models/*"],
+      "middleware/*": ["./src/middleware/*"],
+      "validation/*": ["./src/validation/*"],
+      "services/*": ["./src/services/*"],
+      "types/*": ["./src/types/*"]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
+```
+- Cuối cùng là đem đi deloy thôi!!!
+
+
 ### Copyright belongs to [LianHarman](https://www.facebook.com/LianHarman/)
 
