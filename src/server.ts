@@ -9,17 +9,20 @@ import path from "path";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const __dirname = path.resolve();
 
 // Middleware to parse JSON and URL-encoded data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 //middleware cors
-app.use(cors(
+if (process.env.NODE_ENV !== "production") {
+  app.use(cors(
   {
     origin: ['http://localhost:5174', 'http://localhost:5173'],
   }
 ));
+}
 
 
 // Serve static files for avatars public/avatars
@@ -33,6 +36,15 @@ app.use("/avatars", express.static(path.join(process.cwd(), "public", "avatars")
 routesTasks(app);
 routesAccounts(app);
 
+// config frontend build files
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "../Frontend/dist")));
+  app.get('*', (req: express.Request, res: express.Response) => {
+    res.sendFile(path.join(__dirname, "../Frontend/dist/index.html"));
+  }
+  );
+
+};
 // Connect to the database
 connectDB().then(() => {
   // Starting the server after successful DB connected
