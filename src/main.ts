@@ -3,7 +3,7 @@ import { AppModule } from '@/app.module';
 import { ConfigService } from "@nestjs/config";
 import { NestExpressApplication } from '@nestjs/platform-express';
 import ConfigSwagger from '@/swagger/swaggerExtension';
-import { VersioningType } from '@nestjs/common';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import cookieParser from 'cookie-parser';
 
@@ -23,6 +23,13 @@ async function bootstrap() {
     defaultVersion: `${version}`,
   });
   app.useGlobalGuards(new JwtAuthGuard(reflector)); // You can add global guards here if needed
+
+  //config Pipe for validation
+  app.useGlobalPipes(new ValidationPipe({
+    whitelist: true, //tự động loại bỏ các thuộc tính không được định nghĩa trong DTOs
+    forbidNonWhitelisted: true, //nếu có thuộc tính không được định nghĩa trong DTO thì sẽ ném ra lỗi
+    transform: true, //tự động chuyển đổi payload thành các instance của lớp DTO
+  }));
 
   app.use(cookieParser());
 
