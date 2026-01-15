@@ -1,4 +1,4 @@
-import { Controller, Post, UseGuards, Res, Req } from '@nestjs/common';
+import { Controller, Post, UseGuards, Res, Req, BadRequestException } from '@nestjs/common';
 import { LocalAuthGuard } from '@/auth/local-auth.guard';
 import { AuthService } from '@/auth/auth.service';
 import { ApiBody } from '@nestjs/swagger';
@@ -31,7 +31,15 @@ export class AppController {
         }
         const result = await this.authService.refreshToken(refreshToken, res);
         return result;
-       
+    }
+
+    @Post('account-info')
+    async getAccountInfo(@User() user: IUser) {
+        try {
+            return { message: 'Account info retrieved successfully', success: true, data: user };
+        } catch (error) {
+            throw new BadRequestException('Failed to get account info: ' + error.message);
+        }
     }
 
     @Post('logout')

@@ -17,8 +17,12 @@ export class AuthService {
         private readonly jwtService: JwtService,
         private readonly configService: ConfigService,
         private readonly sessionService: SessionService,
+        
 
     ) { }
+
+    private readonly refresh_token: string = "refresh_token";
+
 
     async validateUser(username: string, password: string): Promise<any> {
         const user: any = await this.userService.findByUsernameOrEmail(username);
@@ -48,7 +52,7 @@ export class AuthService {
         if (!setSessionDB) {
             throw new BadRequestException('Failed to create session');
         }
-        res.cookie('refresh_token', refreshToken, {
+        res.cookie(this.refresh_token, refreshToken, {
             httpOnly: true,
             sameSite: 'none',
             maxAge: ms(this.configService.get<string>('JWT_REFRESH_EXPIRE') as string),
@@ -93,7 +97,7 @@ export class AuthService {
             if (!User || !User._id || !User.userName || !User.email) {
                 throw new BadRequestException('User not found for this refresh token');
             }
-            res.clearCookie('refresh_token');
+            res.clearCookie(this.refresh_token);
             return await this.login(User, res);
         } catch (error) {
             throw new BadRequestException('Invalid refresh token: ' + error.message);
@@ -106,7 +110,7 @@ export class AuthService {
             if (!result) {
                 throw new BadRequestException('Failed to delete session');
             }
-            res.clearCookie('refresh_token');
+            res.clearCookie(this.refresh_token);
             return true;
         } catch (error) {
             throw new BadRequestException('Logout failed: ' + error.message);
