@@ -7,6 +7,7 @@ import { UserModule } from './user/user.module';
 import { RoleModule } from './role/role.module';
 import { DatabasesModule } from './databases/databases.module';
 import { SessionModule } from './session/session.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -28,7 +29,8 @@ import { SessionModule } from './session/session.module';
     UserModule,
     RoleModule,
     DatabasesModule,
-    SessionModule
+    SessionModule,
+    AuthModule
   ],
   controllers: [AppController],
   providers: [AppService],

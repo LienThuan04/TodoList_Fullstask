@@ -11,6 +11,6 @@ export class CreateSessionDto {
     @ApiProperty({ example: 'abcdef123456', description: 'The session token' })
     @IsNotEmpty({ message: 'Refresh token must not be empty' })
     @IsString({ message: 'Refresh token must be a string' })
-    refeshToken: string;
+    refreshToken: string;
 
 }

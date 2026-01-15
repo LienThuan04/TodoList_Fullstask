@@ -11,7 +11,7 @@ export class Session {
     @Prop({required: true, trim: true, unique: true, type: String})
     refreshToken: string;
 
-    @Prop({required: true, type: Date})
+    @Prop({required: true, type: Date, expires: 0}) // expire after the date in expiresAt
     expiresAt: Date;
 
 }

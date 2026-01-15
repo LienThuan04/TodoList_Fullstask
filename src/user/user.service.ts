@@ -22,6 +22,11 @@ export class UserService {
     return !!user;
   }
 
+  async findByUsernameOrEmail(usernameOrEmail: string): Promise<User | null> {
+    const user = await this.userModel.findOne({ $or: [ { userName: usernameOrEmail }, { email: usernameOrEmail } ] }).exec();
+    return user;
+  }
+
   async create(createUserDto: CreateUserDto): Promise<User> {
     if(await this.CheckUserExists(createUserDto.userName, createUserDto.email)){
       throw new Error('User with given username or email already exists');
@@ -32,7 +37,7 @@ export class UserService {
     }
     const newUser = await this.userModel.create({
       ...createUserDto,
-      password: await generatePasswordHash(createUserDto.password, Number(this.ConfigService.get('SALT_ROUNDS'))),
+      password: await generatePasswordHash(createUserDto.password, Number(this.ConfigService.get('BCRYPT_SALT_ROUNDS'))),
       roleId: role?._id,
     });
     if (!newUser){
