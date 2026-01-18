@@ -33,6 +33,13 @@ async function bootstrap() {
 
   app.use(cookieParser());
 
+  app.enableCors({
+    origin: configService.get<string>('CORS_ORIGIN')!.split(','),
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true,
+
+  })
+
 
   await app.listen(process.env.PORT ?? 3000).then(app =>{
     // console.log(`Application is running on: http://${configService.get<string>('HOST')}:${configService.get<number>('PORT')}/${globalPrefix}/v${version}`);

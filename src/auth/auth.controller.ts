@@ -35,7 +35,7 @@ export class AppController {
     async refreshToken(@Req() req: any, @Res({ passthrough: true }) res: Response) {
         const refreshToken = req.cookies['refresh_token'];
         if (!refreshToken) {
-            return { message: 'No refresh token provided', success: false };
+            throw new BadRequestException('Refresh token not found');
         }
         const result = await this.authService.refreshToken(refreshToken, res);
         return result;
