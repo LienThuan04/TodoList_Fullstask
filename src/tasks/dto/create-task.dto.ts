@@ -9,7 +9,7 @@ export class CreateTaskDto {
     @MinLength(1, { message: 'Title must be at least 1 character long' })
     title: string;
 
-    @ApiProperty({ example: 'This is a sample task description.', description: 'The description of the task' })
+    @ApiProperty({ description: 'The description of the task' })
     @IsNotEmpty({ message: 'Description must not be empty' })
     @IsString({ message: 'Description must be a string' })
     @MaxLength(500, { message: 'Description must be at most 500 characters long' })

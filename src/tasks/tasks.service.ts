@@ -25,8 +25,42 @@ export class TaskService {
     return createdTask;
   }
 
-  async findAll() {
-    return `This action returns all task`;
+  async findAllTasksByOwnerId(ownerId: string, startDate: Date | null): Promise<{ tasks: Task[]; counts: { pending: number; active: number; inProgress: number; completed: number; total: number } }> {
+    const ownerIdObj = new Types.ObjectId(ownerId);
+    const queryDateFilter = startDate ? { createdAt: { $gte: startDate } } : {};
+    const results = await this.taskModel.aggregate([
+      { $match: { ownerId: ownerIdObj, ...queryDateFilter } },
+      {
+        $facet: { // Faceted Search to get tasks and counts in one query
+          task: [
+            { $sort: { createdAt: -1 } },
+            { $project: { title: 1, description: 1, status: 1, completedAt: 1, createdAt: 1, updatedAt: 1 } }
+          ],
+          pendingCount: [{ $match: { status: 'pending' } }, { $count: 'count' }],
+          activeCount: [{ $match: { status: 'active' } }, { $count: 'count' }],
+          inProgressCount: [{ $match: { status: 'in-progress' } }, { $count: 'count' }],
+          completedCount: [{ $match: { status: 'completed' } }, { $count: 'count' }],
+          totalCount: [
+            { $count: 'count' }
+          ]
+        }
+      }
+    ]);
+    return results && results.length > 0 ? {
+      tasks: results[0]?.task,
+      counts: {
+        pending: results[0]?.pendingCount[0]?.count || 0,
+        active: results[0]?.activeCount[0]?.count || 0,
+        inProgress: results[0]?.inProgressCount[0]?.count || 0,
+        completed: results[0]?.completedCount[0]?.count || 0,
+        total: results[0]?.totalCount[0]?.count || 0,
+      }
+    } : { tasks: [], counts: { pending: 0, active: 0, inProgress: 0, completed: 0, total: 0 } };
+  }
+
+  async TaskIsOwner(taskId: string, userId: string): Promise<boolean> {
+    const task = await this.taskModel.findOne({ _id: taskId, ownerId: new Types.ObjectId(userId) }).exec();
+    return !!task;
   }
 
   async update(id: string, updateTaskDto: UpdateTaskDto, userId: string) {
