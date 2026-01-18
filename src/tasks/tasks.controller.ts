@@ -4,8 +4,8 @@ import { CreateTaskDto } from '@/tasks/dto/create-task.dto';
 import { UpdateTaskDto } from '@/tasks/dto/update-task.dto';
 import { User } from '@/decorators/user.decorator';
 import type { IUser } from '@/users/interfaces/IUser';
-import type { IFilterDate } from '@/tasks/interfaces/IFilterDate';
 import { ApiQuery } from '@nestjs/swagger';
+import { FindTaskQueryDto } from './dto/find-task-query.dto';
 
 @Controller('tasks')
 export class TaskController {
@@ -21,12 +21,11 @@ export class TaskController {
   }
 
   @Get()
-  @ApiQuery({ name: 'filterDate', required: false, enum: ['all_time', 'today', 'this_week', 'this_month', 'this_year'], default: 'all_time' })
-  async findAll(@User() user: IUser, @Query('filterDate') filterDate?: IFilterDate) {
-    filterDate ? filterDate.toString() : 'all_time';
+  @ApiQuery({ name: 'filterDate', required: false })
+  async findAll(@User() user: IUser, @Query() query?: FindTaskQueryDto) {
     const now = new Date();
     let startDate: Date | null = null;
-    switch (filterDate) {
+    switch (query?.filterDate) {
       case 'today': {
         startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate()); // 11/08/2024 00:00:00
         break;

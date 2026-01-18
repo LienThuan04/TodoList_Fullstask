@@ -1,1 +1,0 @@
-export type IFilterDate = 'all_time' | 'today' | 'this_week' | 'this_month' | 'this_year' | null;
