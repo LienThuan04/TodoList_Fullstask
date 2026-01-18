@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from '@/user/dto/create-user.dto';
-import { UpdateUserDto } from '@/user/dto/update-user.dto';
+import { CreateUserDto } from '@/users/dto/create-user.dto';
+import { UpdateUserDto } from '@/users/dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './schema/user.schema';
 import { Model } from 'mongoose';
-import { generatePasswordHash } from '@/lib/bcrypt';
-import { RoleService } from '../role/role.service';
+import { generatePasswordHash } from '@/libraries/bcrypt/bcrypt';
+import { RoleService } from '../roles/roles.service';
 import { ConfigService } from '@nestjs/config';
 import { USER_ROLE } from '@/databases/sample';
 

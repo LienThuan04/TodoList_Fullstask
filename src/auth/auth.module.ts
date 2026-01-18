@@ -1,20 +1,22 @@
 import { Module } from '@nestjs/common';
-import { AuthService } from './auth.service';
+import { AuthService } from '@/auth/auth.service';
 import { PassportModule } from '@nestjs/passport';
-import { UserModule } from '@/user/user.module';
-import { SessionModule } from '@/session/session.module';
+import { UserModule } from '@/users/users.module';
+import { SessionModule } from '@/sessions/sessions.module';
 import { LocalStrategy } from '@/auth/passport/local.strategy';
 import { AppController } from '@/auth/auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { JwtStrategy } from './passport/jwt.strategy';
+import { JwtStrategy } from '@/auth/passport/jwt.strategy';
 import ms from 'ms';
+import { RoleModule } from '@/roles/roles.module';
 
 @Module({
   imports: [
     PassportModule,
     UserModule,
     SessionModule,
+    RoleModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => {

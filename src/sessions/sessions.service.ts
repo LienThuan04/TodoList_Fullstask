@@ -1,5 +1,5 @@
 import { Injectable, Delete } from '@nestjs/common';
-import { CreateSessionDto } from '@/session/dto/create-session.dto';
+import { CreateSessionDto } from '@/sessions/dto/create-session.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Session, SessionDocument } from './schema/session.schema';
 import { Model, Types } from 'mongoose';

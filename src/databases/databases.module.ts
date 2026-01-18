@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { DatabasesController } from '@/databases/databases.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Role, RoleSchema } from '@/role/schema/role.schema';
+import { Role, RoleSchema } from '@/roles/schemas/role.schema';
 import { DatabasesService } from '@/databases/databases.service';
-import { RoleService } from '@/role/role.service';
-import { User, UserSchema } from '@/user/schema/user.schema';
+import { RoleService } from '@/roles/roles.service';
+import { User, UserSchema } from '@/users/schema/user.schema';
 @Module({
   imports: [
     MongooseModule.forFeature([

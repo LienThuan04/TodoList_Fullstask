@@ -1,33 +1,36 @@
-import { comparePassword } from '@/lib/bcrypt';
-import { IUser } from '@/user/interface/IUser';
-import { UserService } from '@/user/user.service';
+import { comparePassword } from '@/libraries/bcrypt/bcrypt';
+import { IUser } from '@/users/interfaces/IUser';
+import { UserService } from '@/users/users.service';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import type { Response } from 'express';
-import { CreateSessionDto } from '@/session/dto/create-session.dto';
+import { CreateSessionDto } from '@/sessions/dto/create-session.dto';
 import { Types } from 'mongoose';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import ms from 'ms';
-import { SessionService } from '@/session/session.service';
+import { SessionService } from '@/sessions/sessions.service';
+import { RegisterDto } from './Dtos/authRequest.dto';
+import { RoleService } from '@/roles/roles.service';
 
 @Injectable()
 export class AuthService {
     constructor(
         private readonly userService: UserService,
+        private readonly roleService: RoleService,
         private readonly jwtService: JwtService,
         private readonly configService: ConfigService,
         private readonly sessionService: SessionService,
-        
 
     ) { }
 
     private readonly refresh_token: string = "refresh_token";
 
-
-    async validateUser(username: string, password: string): Promise<any> {
-        const user: any = await this.userService.findByUsernameOrEmail(username);
+    async validateUser(userName: string, password: string): Promise<any> {
+        const user: any = await this.userService.findByUsernameOrEmail(userName);
+        const role = await this.roleService.findOne(user.roleId.toString());
         if (user && await comparePassword(password, user.password)) {
             const { password, ...result } = user.toObject();
+            result.roleName = role?.name;
             return result;
         }
         return null;
@@ -42,13 +45,25 @@ export class AuthService {
         return refresh_token;
     }
 
+    async registerUser(registerDto: RegisterDto): Promise<IUser> {
+        const { userName, email, password } = registerDto;
+        const userExists = await this.userService.CheckUserExists(userName, email);
+        if (userExists) {
+            throw new BadRequestException('Username or email already exists');
+        }
+        const createUserDto = { userName, email, password, roleName: 'user' };
+        const newUser: any = await this.userService.create(createUserDto);
+        const { password: pwd, ...result } = newUser.toObject();
+        return result;
+    }
+
     async login(user: IUser, res: Response): Promise<any> {
         const refreshToken = await this.generateRefreshToken({ _sub: user._id, _id: user._id });
-        const CreateSessionDto: CreateSessionDto = {
+        const createSessionDto: CreateSessionDto = {
             userId: user._id as unknown as Types.ObjectId,
             refreshToken: refreshToken,
         };
-        const setSessionDB = await this.sessionService.UpSertSessionAsync(CreateSessionDto);
+        const setSessionDB = await this.sessionService.UpSertSessionAsync(createSessionDto);
         if (!setSessionDB) {
             throw new BadRequestException('Failed to create session');
         }
@@ -63,12 +78,13 @@ export class AuthService {
             userName: user.userName,
             email: user.email,
             avatar: user.avatar,
+            roleName: user.roleName,
         };
         const accessToken = this.jwtService.sign(payLoad);
         return {
             message: 'Login successful',
             accessToken: accessToken,
-            user,
+            user: payLoad,
         };
     }
 
@@ -85,14 +101,22 @@ export class AuthService {
                 throw new BadRequestException('Session not found for the provided refresh token and user ID');
             }
             const userFetch: any = await this.userService.findOne(session.userId.toString());
-            if(userFetch._id.toString() !== session.userId.toString()){
+            if (userFetch._id.toString() !== session.userId.toString()) {
                 throw new BadRequestException('User ID does not match session user ID');
+            }
+            if (userFetch) {
+                const role = await this.roleService.findOne(userFetch.roleId.toString());
+                if (!role) {
+                    throw new BadRequestException('Role not found for the user');
+                }
+                userFetch.roleName = role?.name;
             }
             const User: IUser = {
                 _id: userFetch._id,
                 userName: userFetch.userName,
                 email: userFetch.email,
                 avatar: userFetch.avatar,
+                roleName: userFetch.roleName,
             };
             if (!User || !User._id || !User.userName || !User.email) {
                 throw new BadRequestException('User not found for this refresh token');

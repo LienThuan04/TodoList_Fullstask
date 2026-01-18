@@ -1,13 +1,14 @@
-import { Controller, Post, UseGuards, Res, Req, BadRequestException } from '@nestjs/common';
+import { Controller, Post, UseGuards, Res, Req, BadRequestException, Body } from '@nestjs/common';
 import { LocalAuthGuard } from '@/auth/local-auth.guard';
 import { AuthService } from '@/auth/auth.service';
-import { ApiBody } from '@nestjs/swagger';
-import { AuthRequestDto } from '@/auth/Dtos/authRequest.dto';
-import { User } from '@/decorator/user.decorator';
-import type { IUser } from '@/user/interface/IUser';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { LoginDto, RegisterDto } from '@/auth/Dtos/authRequest.dto';
+import { User } from '@/decorators/user.decorator';
+import type { IUser } from '@/users/interfaces/IUser';
 import type { Response } from 'express';
-import { Public } from '@/decorator/metadata';
+import { Public } from '@/decorators/metadata';
 
+@ApiTags('Authentications')
 @Controller('auth')
 export class AppController {
     constructor(
@@ -15,8 +16,15 @@ export class AppController {
     ) { }
 
     @Public()
+    @Post('register')
+    async register(@Body() registerDto: RegisterDto, @Res({ passthrough: true }) res: Response) {
+        const newAccount = await this.authService.registerUser(registerDto);
+        return { message: 'Registration successful', data: newAccount };
+    }
+
+    @Public()
     @UseGuards(LocalAuthGuard) // Sử dụng LocalAuthGuard để xác thực người dùng
-    @ApiBody({ type: AuthRequestDto })
+    @ApiBody({ type: LoginDto })
     @Post('login')
     async login(@Res({ passthrough: true }) res: Response, @User() user: IUser) {
         return await this.authService.login(user, res);
@@ -36,7 +44,7 @@ export class AppController {
     @Post('account-info')
     async getAccountInfo(@User() user: IUser) {
         try {
-            return { message: 'Account info retrieved successfully', success: true, data: user };
+            return { message: 'Account info retrieved successfully', user };
         } catch (error) {
             throw new BadRequestException('Failed to get account info: ' + error.message);
         }

@@ -2,9 +2,9 @@ import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from '@/app.module';
 import { ConfigService } from "@nestjs/config";
 import { NestExpressApplication } from '@nestjs/platform-express';
-import ConfigSwagger from '@/swagger/swaggerExtension';
+import ConfigSwagger from '@/libraries/swagger/swaggerExtension';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
-import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
 import cookieParser from 'cookie-parser';
 
 async function bootstrap() {

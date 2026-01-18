@@ -3,11 +3,12 @@ import { AppController } from '@/app.controller';
 import { AppService } from '@/app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UserModule } from './user/user.module';
-import { RoleModule } from './role/role.module';
-import { DatabasesModule } from './databases/databases.module';
-import { SessionModule } from './session/session.module';
-import { AuthModule } from './auth/auth.module';
+import { UserModule } from '@/users/users.module';
+import { RoleModule } from '@/roles/roles.module';
+import { DatabasesModule } from '@/databases/databases.module';
+import { SessionModule } from '@/sessions/sessions.module';
+import { AuthModule } from '@/auth/auth.module';
+import { TaskModule } from '@/tasks/tasks.module';
 
 @Module({
   imports: [
@@ -18,8 +19,8 @@ import { AuthModule } from './auth/auth.module';
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (ConfigService: ConfigService) => ({
-        uri: ConfigService.get<string>("MONGODB_URI"),
-        dbName: "ToDoList",
+        uri: ConfigService.get<string>("MONGODB_URI")!,
+        dbName: ConfigService.get<string>("DB_NAME") ?? "ToDoList",
         connectionFactory: (connection) =>{
           return connection
         }
@@ -30,7 +31,8 @@ import { AuthModule } from './auth/auth.module';
     RoleModule,
     DatabasesModule,
     SessionModule,
-    AuthModule
+    AuthModule,
+    TaskModule
   ],
   controllers: [AppController],
   providers: [AppService],

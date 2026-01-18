@@ -1,4 +1,4 @@
-import { IUser } from '@/user/interface/IUser';
+import { IUser } from '@/users/interfaces/IUser';
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 
 export const User = createParamDecorator(

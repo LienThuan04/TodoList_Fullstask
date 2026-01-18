@@ -1,4 +1,4 @@
-import { Role } from "@/role/schema/role.schema";
+import { Role } from "@/roles/schemas/role.schema";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import mongoose, { HydratedDocument } from "mongoose";
 
