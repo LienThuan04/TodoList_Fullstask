@@ -14,7 +14,7 @@ export const isEmailValid = (email: string): boolean => {
 
 
 const LoginPage = () => {
-    const [email, setEmail] = useState<string>("");
+    const [emailOrUsername, setEmailOrUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const [remember, setRemember] = useState<boolean>(false);
@@ -23,11 +23,11 @@ const LoginPage = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!email || !password) {
+        if (!emailOrUsername || !password) {
             toast.error("Please fill in all fields");
             return;
         }
-        if (!isEmailValid(email)) {
+        if (emailOrUsername.includes("@") && !isEmailValid(emailOrUsername)) {
             toast.error("Please enter a valid email address");
             return;
         }
@@ -41,12 +41,12 @@ const LoginPage = () => {
             // { message: 'Login successful', data: { AccessToken: 'eyJ...' } }
             // We call the central `api` instance so it uses the same baseURL
             // and interceptors that we defined.
-            const res = await api.post('/api/accounts/login', { email, password });
+            const res = await api.post('/auth/login', { username: emailOrUsername, password });
 
             // Extract token from response. Based on your API example the token
             // is at res.data.data.AccessToken (capital A). We only check that
             // exact path here to keep things simple and predictable.
-            const token = res?.data?.data?.AccessToken ?? null;
+            const token = res?.data?.accessToken ?? null;
             console.log('Login response token:', token);
 
             // If token is missing, show an error. Do not store non-string data.
@@ -94,13 +94,13 @@ const LoginPage = () => {
                             <CardContent>
                                 <form onSubmit={handleSubmit} className="space-y-4">
                                     <div>
-                                        <label className="mb-1 block text-sm font-medium">Email</label>
+                                        <label className="mb-1 block text-sm font-medium">Email or UserName</label>
                                         <Input
-                                            type="email"
-                                            value={email as string}
-                                            onChange={(e) => setEmail(e.target.value as string)}
-                                            placeholder="you@example.com"
-                                            aria-label="Email"
+                                            type="text"
+                                            value={emailOrUsername as string}
+                                            onChange={(e) => setEmailOrUsername(e.target.value as string)}
+                                            placeholder="you@example.com or username"
+                                            aria-label="Email or Username"
                                         />
                                     </div>
 

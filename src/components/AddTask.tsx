@@ -22,7 +22,7 @@ const AddTask = ({ fetchTasks }: { fetchTasks: () => void }) => {
         setLoading(true);
         try {
             const payload = { title: title, description: description || undefined };
-            await api.post("/api/tasks", payload);
+            await api.post("/tasks", payload);
             // show the task title underlined in the toast message
             toast.success(
                 <span>

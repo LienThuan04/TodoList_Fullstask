@@ -14,8 +14,10 @@ import { visibleTasksLimit } from "@/lib/data";
 const HomePage = () => {
     const [StateBuffer, setStateBuffer] = useState<Itasks[]>([]);
     const [NumberStatusTasks, setNumberStatusTasks] = useState<{
+        totalCount: number;
         pendingCount: number; activeCount: number; inProgressCount: number; completedCount: number
     }>({
+        totalCount: 0,
         pendingCount: 0, activeCount: 0, inProgressCount: 0, completedCount: 0
     });
     const [filter, setFilter] = useState<string>('ALL');
@@ -47,13 +49,15 @@ const HomePage = () => {
 
     const fetchTasks = async () => {
         try {
-            const res = await api.get(`/api/tasks?filterDate=${dateFilterQuery}`);
-            const TasksList = res.data.data.tasks as Itasks[];
+            const res = await api.get(`/tasks?filterDate=${dateFilterQuery}`);
+            // console.log("API response for tasks:", res.data);
+            const TasksList = res?.data?.data?.tasks as Itasks[];
             setNumberStatusTasks({
-                pendingCount: res.data.data?.pendingCount ? res.data.data?.pendingCount : 0,
-                activeCount: res.data.data?.activeCount ? res.data.data?.activeCount : 0,
-                inProgressCount: res.data.data?.inProgressCount ? res.data.data?.inProgressCount : 0,
-                completedCount: res.data.data?.completedCount ? res.data.data?.completedCount : 0,
+                totalCount: res.data?.data?.counts?.total ? res.data?.data?.counts?.total : 0,
+                pendingCount: res.data?.data?.counts?.pending ? res.data?.data?.counts?.pending : 0,
+                activeCount: res?.data.data?.counts?.active ? res.data.data?.counts?.active : 0,
+                inProgressCount: res.data.data?.counts?.inProgress ? res.data.data?.counts?.inProgress : 0,
+                completedCount: res.data.data?.counts?.completed ? res.data.data?.counts?.completed : 0,
             });
             setStateBuffer(TasksList);
             console.log("Fetched tasks:", TasksList);

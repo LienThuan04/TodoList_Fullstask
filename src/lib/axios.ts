@@ -1,42 +1,82 @@
 import axios from "axios";
 import auth from "@lib/auth";
+import { toast } from "sonner";
 
-export const domain: string = "http://localhost:5001";
+export const domain: string = import.meta.env.MODE === "development" ? "http://localhost:8080/api/v1" : "";
 
+const NO_RETRY_HEADER = "x-no-retry";
+let isRefreshing = false;
+let refreshPromise: Promise<string | null> | null = null;
 
 // Create a central axios instance for the app. We attach interceptors so that
 // Authorization and token-expiry behavior is centralized in one place.
 const api = axios.create({
   baseURL: domain as string,
+  withCredentials: true, // Include cookies in all requests
   headers: {
     "Content-Type": "application/json",
   },
 });
 
 /*
- Request interceptor responsibilities:
-  - read stored token (if any)
-  - check token expiry client-side (quick UX check) and redirect to /login if expired
-  - attach Authorization header if token exists and is valid
-
-  Note: the interceptor's expiry check is only a UX convenience; the server
-  must still validate the token signature and expiry on every request.
+ Refresh token handler responsibilities:
+  - Call /auth/refresh-token endpoint to get a new access token
+  - Update the stored token with the new one
+  - Return the new token or null if refresh fails
 */
-api.interceptors.request.use(
-  (config) => {
-    const token = auth.getToken();
-    if (token) {
-      // if token expired, remove and redirect to login
-      if (!auth.isTokenValid(token)) {
-        // remove token from storage and redirect to login to force re-auth
-        auth.removeToken();
+const handleRefreshToken = async (): Promise<string | null> => {
+  // If already refreshing, wait for that promise instead of making another request
+  if (isRefreshing && refreshPromise) {
+    return refreshPromise;
+  }
+
+  isRefreshing = true;
+  refreshPromise = (async () => {
+    try {
+      const response = await axios.post(`${domain}/auth/refresh-token`, {}, {
+        withCredentials: true, // Include cookies in the request
+      });
+      if (response?.data?.accessToken) {
+        const newToken = response.data.accessToken;
+        auth.setToken(newToken);
+        return newToken;
+      }
+      return null;
+    } catch (error: any) {
+      console.error("Failed to refresh token:", error.message);
+      auth.removeToken();
+      toast.error("Session expired, please log in again.");
+      setTimeout(() => {
         if (typeof window !== "undefined") {
           window.location.href = "/login";
         }
-        // reject the request so the caller sees an error instead of sending a bad request
-        return Promise.reject(new Error("Token expired"));
-      }
-      // attach header for authenticated requests
+      }, 2000);
+      return null;
+    } finally {
+      isRefreshing = false;
+      refreshPromise = null;
+    }
+  })();
+
+  return refreshPromise;
+};
+
+/*
+ Request interceptor responsibilities:
+  - read stored token (if any)
+  - attach Authorization header if token exists
+  - exclude refresh-token endpoint from interceptor to avoid infinite loops
+  - let backend validate token expiry and respond with 401 if needed
+*/
+api.interceptors.request.use(
+  async (config) => {
+    // Skip interceptor for refresh token endpoint
+    if (config.url?.includes("/auth/refresh-token")) {
+      return config;
+    }
+
+    const token = auth.getToken();
+    if (token) {
       config.headers = config.headers ?? {};
       config.headers["Authorization"] = `Bearer ${token}`;
     }
@@ -47,18 +87,37 @@ api.interceptors.request.use(
 
 /*
  Response interceptor responsibilities:
-  - If the server returns 401 (unauthorized) we'll clear the stored token and
-    redirect to /login. This handles cases where server-side validation failed.
+  - If the server returns 401 (unauthorized), attempt to refresh the token
+  - If refresh is successful, retry the original request with the new token
+  - If refresh fails or request was already retried, redirect to /login
 */
 api.interceptors.response.use(
   (res) => res,
-  (err) => {
-    if (err?.response?.status === 401) {
-      auth.removeToken();
-      setTimeout(() => {
-        if (typeof window !== "undefined") window.location.href = "/login";
-      }, 2000);
+  async (err) => {
+    const originalConfig = err.config;
+    
+    if (
+      originalConfig &&
+      err?.response?.status === 401 &&
+      originalConfig.url !== "/auth/login" &&
+      originalConfig.url !== "/auth/refresh-token" &&
+      !originalConfig.headers[NO_RETRY_HEADER]
+    ) {
+      // Mark this request as already retried to prevent infinite loops
+      originalConfig.headers = originalConfig.headers ?? {};
+      originalConfig.headers[NO_RETRY_HEADER] = "true";
+
+      // Attempt to refresh the token
+      const newToken = await handleRefreshToken();
+
+      if (newToken) {
+        // Update the authorization header with the new token
+        originalConfig.headers["Authorization"] = `Bearer ${newToken}`;
+        // Retry the original request
+        return api.request(originalConfig);
+      }
     }
+
     return Promise.reject(err);
   }
 );

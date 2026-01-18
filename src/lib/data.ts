@@ -1,4 +1,5 @@
 const FilterType = {
+    // TOTAL: "total",
     ALL: "all",
     PENDING: "pending",
     ACTIVE: "active",

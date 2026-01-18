@@ -14,7 +14,7 @@ const Header = () => {
 
     const fetchAvatar = async () => {
         try {
-            const res = await api.get('/api/accounts/avatar');
+            const res = await api.get('/accounts/avatar');
             if(res?.data?.data?.avatar){
                 setAvatarUser(res.data.data.avatar);
             }
@@ -29,7 +29,7 @@ const Header = () => {
         try {
             const formData = new FormData();
             formData.append("avatar", file);
-            const req = await api.post("/api/accounts/avatar", formData,{
+            const req = await api.post("/accounts/avatar", formData,{
                 headers: { "Content-Type": "multipart/form-data" }
             } );
             if(!req?.data?.data){
@@ -75,9 +75,15 @@ const Header = () => {
             .toUpperCase()
         : null;
 
-    const doLogout = () => {
+    const doLogout = async () => {
         try {
+            // Clear cookies by calling logout endpoint
+            await api.post("/auth/logout").catch((error) => {
+                console.error("Error calling logout endpoint:", error);
+            });
             auth.removeToken();
+            // Clear browser cookies
+            auth.clearCookies();
         } catch (e) {
             /* ignore */
             console.error("Error during logout:", e);

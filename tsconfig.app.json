@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "ignoreDeprecations": "6.0", /* thêm dòng này để báo với ts rằng ignoreDeprecations đã được cấu hình */
     "baseUrl": ".", /* Thư mục gốc của dự án */
     "paths": { /* đường dẫn thư mục */
       "@/*": ["src/*"], /* Thư mục src */

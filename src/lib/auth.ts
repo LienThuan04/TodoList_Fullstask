@@ -94,6 +94,17 @@ export const getAvatar = (): string | null => {
   return null;
 };
 
+/**
+ * Clear all cookies from the browser
+ */
+export function clearCookies() {
+  document.cookie.split(";").forEach((c) => {
+    document.cookie = c
+      .replace(/^ +/, "")
+      .replace(/=.*/, `=;expires=${new Date().toUTCString()};path=/`);
+  });
+}
+
 export default {
   setToken,
   getToken,
@@ -101,4 +112,5 @@ export default {
   getAvatar,
   parseJwt,
   isTokenValid,
+  clearCookies,
 };

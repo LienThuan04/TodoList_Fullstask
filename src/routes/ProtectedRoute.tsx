@@ -5,15 +5,21 @@ import auth from "@lib/auth";
 /**
  * ProtectedRoute
  * This component is used as a wrapper for routes that require authentication.
- * It uses `auth.isTokenValid()` (client-side expiry check) and redirects
- * to `/login` when there's no valid token.
+ * It checks if a token exists in localStorage.
  *
- * Important: server-side must still reject unauthorized requests. This
- * component only protects client-side navigation and user experience.
+ * Important notes:
+ * - Token expiry validation is handled by the backend (via 401 responses)
+ * - This component only checks token existence for client-side navigation protection
+ * - If token is expired, the backend will return 401, and axios interceptors will handle refresh/redirect
  */
 const ProtectedRoute: React.FC = () => {
-  const valid = auth.isTokenValid();
-  if (!valid) return <Navigate to="/login" replace />;
+  const token = auth.getToken();
+  
+  // If no token exists, redirect to login
+  if (!token) {
+    return <Navigate to="/login" replace />;
+  }
+  
   return <Outlet />;
 };
 

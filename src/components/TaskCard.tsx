@@ -17,7 +17,7 @@ const TaskCard = ({ task, index, fetchTasks }: { task: Itasks; index: number; fe
 
     const handleDelTask = async (ID: string) => {
         try {
-            const req = await api.delete(`/api/tasks/${ID}`);
+            const req = await api.delete(`/tasks/${ID}`);
             if (req.status === 200) {
                 toast.success(req.data.message || "Task deleted successfully");
                 fetchTasks();
@@ -32,7 +32,7 @@ const TaskCard = ({ task, index, fetchTasks }: { task: Itasks; index: number; fe
     const handleUpdateTask = async (ID: string) => {
         try {
             const payload: { title: string; description: string } = { title: updatedTitle, description: updatedDescription };
-            const req = await api.put(`/api/tasks/${ID}`, payload);
+            const req = await api.patch(`/tasks/${ID}`, payload);
             if (req.status === 200) {
                 toast.success(req.data.message || "Task updated");
                 setIsEditting(false);
@@ -51,7 +51,7 @@ const TaskCard = ({ task, index, fetchTasks }: { task: Itasks; index: number; fe
         setPopoverOpen(false);
         try {
             const payload: any = { status };
-            const req = await api.put(`/api/tasks/${ID}`, payload);
+            const req = await api.patch(`/tasks/${ID}`, payload);
             if (req.status === 200) {
                 toast.success(req.data.message || "Status updated");
                 fetchTasks();

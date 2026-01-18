@@ -8,11 +8,12 @@ const StatsAndFilters = (
     {
         filterType = "ALL",
         setFilter,
-        NumberStatusTasks: { pendingCount = 0, activeCount = 0, inProgressCount = 0, completedCount = 0 },
+        NumberStatusTasks: { totalCount = 0, pendingCount = 0, activeCount = 0, inProgressCount = 0, completedCount = 0 },
     }: {
         filterType?: string;
         setFilter: (filter: string) => void;
         NumberStatusTasks: {
+            totalCount: number,
             pendingCount: number,
             activeCount: number,
             inProgressCount: number,
@@ -24,6 +25,9 @@ const StatsAndFilters = (
         <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
             {/* phần thống kê */}
             <div className="flex gap-3">
+                <Badge variant="secondary" className="bg-amber/20 text-red-500 border-info/20">
+                    {totalCount} Total
+                </Badge>
                 <Badge variant="secondary" className="bg-amber/20 text-zinc-300 border-info/20">
                     {pendingCount} {FilterType.PENDING}
                 </Badge>
