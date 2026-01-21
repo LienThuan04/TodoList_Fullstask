@@ -25,10 +25,10 @@ const StatsAndFilters = (
         <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
             {/* phần thống kê */}
             <div className="flex gap-3">
-                <Badge variant="secondary" className="bg-amber/20 text-red-500 border-info/20">
+                <Badge variant="secondary" className="bg-amber/20  text-zinc-200 border-info/20">
                     {totalCount} Total
                 </Badge>
-                <Badge variant="secondary" className="bg-amber/20 text-zinc-300 border-info/20">
+                <Badge variant="secondary" className="bg-amber/20 text-red-500 border-info/20">
                     {pendingCount} {FilterType.PENDING}
                 </Badge>
                 <Badge variant="secondary" className="bg-amber/50 text-accent-foreground border-info/20">

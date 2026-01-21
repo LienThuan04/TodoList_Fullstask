@@ -4,7 +4,8 @@ import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, Dialog
 import { Button } from "@components/ui/button";
 import { LogOut } from "lucide-react";
 import { toast } from "sonner";
-import api, { domain } from "@lib/axios";
+import api from "@lib/axios";
+import reactLogo from "@/assets/react.svg";
 
 const Header = () => {
     const [name, setName] = useState<string | null>(null);
@@ -14,9 +15,9 @@ const Header = () => {
 
     const fetchAvatar = async () => {
         try {
-            const res = await api.get('/accounts/avatar');
-            if(res?.data?.data?.avatar){
-                setAvatarUser(res.data.data.avatar);
+            const res = await api.post('/auth/account-info');
+            if(res?.data?.user?.avatar){
+                setAvatarUser(res.data.user.avatar);
             }
         } catch (error) {
             console.error("Error fetching avatar:", error);
@@ -28,8 +29,8 @@ const Header = () => {
         if (!file) return;
         try {
             const formData = new FormData();
-            formData.append("avatar", file);
-            const req = await api.post("/accounts/avatar", formData,{
+            formData.append("file", file);
+            const req = await api.post("/files/upload-avatar", formData,{
                 headers: { "Content-Type": "multipart/form-data" }
             } );
             if(!req?.data?.data){
@@ -116,21 +117,11 @@ const Header = () => {
                                         className="inline-block p-0 border-0 bg-transparent rounded-full"
                                         aria-label="Change avatar"
                                     >
-                                        {avatarUser ? (
-                                            <img
-                                                src={
-                                                    typeof avatarUser === "string"
-                                                        ? `${domain}/avatars/${avatarUser}`
-                                                        : `${domain}/avatars/default.png`
-                                                }
-                                                alt="User Avatar"
-                                                className="w-10 h-10 rounded-full object-cover"
-                                            />
-                                        ) : (
-                                            <div className="w-10 h-10 rounded-full bg-slate-800 text-white flex items-center justify-center text-sm font-medium">
-                                                {initials ?? "U"}
-                                            </div>
-                                        )}
+                                        <img
+                                            src={avatarUser || reactLogo}
+                                            alt="User Avatar"
+                                            className="w-10 h-10 rounded-full object-cover"
+                                        />
                                     </button>
 
                                     <input

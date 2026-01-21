@@ -60,7 +60,6 @@ const HomePage = () => {
                 completedCount: res.data.data?.counts?.completed ? res.data.data?.counts?.completed : 0,
             });
             setStateBuffer(TasksList);
-            console.log("Fetched tasks:", TasksList);
         } catch (error) {
             console.error("Error fetching tasks:", error);
             toast.error("Failed to fetch tasks");
