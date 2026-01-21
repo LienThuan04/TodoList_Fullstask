@@ -27,13 +27,20 @@ export class AuthService {
 
     async validateUser(userName: string, password: string): Promise<any> {
         const user: any = await this.userService.findByUsernameOrEmail(userName);
-        const role = await this.roleService.findOne(user.roleId.toString());
-        if (user && await comparePassword(password, user.password)) {
-            const { password, ...result } = user.toObject();
-            result.roleName = role?.name;
-            return result;
+        // Short-circuit when user not found to avoid null access
+        if (!user) {
+            return null;
         }
-        return null;
+        // Optional chaining in case roleId is missing
+        const role = user.roleId ? await this.roleService.findOne(user.roleId.toString()) : null;
+        // Validate password
+        const isMatch = await comparePassword(password, user.password);
+        if (!isMatch) {
+            return null;
+        }
+        const { password: _pwd, ...result } = user.toObject();
+        result.roleName = role?.name ?? null;
+        return result;
     }
 
     async generateRefreshToken(payload: { _sub: string; _id: string }): Promise<string> {

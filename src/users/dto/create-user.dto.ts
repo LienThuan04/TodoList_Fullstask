@@ -1,6 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEmail, IsMongoId, IsNotEmpty, IsString, MaxLength, MinLength } from "class-validator";
-import { Types } from "mongoose";
+import { IsEmail, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
 
 export class CreateUserDto {
     @ApiProperty({ example: 'johndoe', description: 'The username of the user' })
@@ -31,4 +30,13 @@ export class CreateUserDto {
     @MaxLength(50, { message: 'Role name must be at most 50 characters long' })
     @MinLength(2, { message: 'Role name must be at least 2 characters long' })
     roleName: string;
+
+    @ApiProperty({ 
+        example: 'https://example.com/avatar.jpg', 
+        description: 'The avatar URL of the user',
+        required: false 
+    })
+    @IsOptional()
+    @IsString({ message: 'Avatar must be a string' })
+    avatar?: string;
 }

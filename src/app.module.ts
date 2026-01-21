@@ -9,6 +9,7 @@ import { DatabasesModule } from '@/databases/databases.module';
 import { SessionModule } from '@/sessions/sessions.module';
 import { AuthModule } from '@/auth/auth.module';
 import { TaskModule } from '@/tasks/tasks.module';
+import { FilesModule } from '@/files/files.module';
 
 @Module({
   imports: [
@@ -32,7 +33,8 @@ import { TaskModule } from '@/tasks/tasks.module';
     DatabasesModule,
     SessionModule,
     AuthModule,
-    TaskModule
+    TaskModule,
+    FilesModule
   ],
   controllers: [AppController],
   providers: [AppService],
