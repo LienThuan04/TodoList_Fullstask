@@ -85,4 +85,12 @@ export class TaskService {
     }
     return deletedTask;
   }
+
+  async findById(id: string, userId: string) {
+    const task = await this.taskModel.findOne({ _id: id, ownerId: new Types.ObjectId(userId) }).exec();
+    if (!task) {
+      throw new Error('Task not found');
+    }
+    return task;
+  }
 }

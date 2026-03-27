@@ -62,7 +62,7 @@ export class FilesService {
         .getPublicUrl(filePath);
 
       return urlData.publicUrl;
-    } catch (error) {
+    } catch (error: any) {
       throw new BadRequestException(`Failed to upload file: ${error.message}`);
     }
   }
@@ -93,7 +93,7 @@ export class FilesService {
         console.error(`Failed to delete file: ${error.message}`);
         // Don't throw error, just log it
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(`Failed to delete file: ${error.message}`);
       // Don't throw error for deletion failures
     }

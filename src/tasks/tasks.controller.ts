@@ -72,6 +72,10 @@ export class TaskController {
   @Delete(':id')
   async remove(@Param('id') id: string, @User() user: IUser) {
     try {
+      const task = await this.taskService.findById(id, user._id);
+      if (!task) {
+        throw new BadRequestException('Task not found');
+      }
       const isOwner = await this.taskService.TaskIsOwner(id, user._id);
       if (!isOwner) {
         throw new BadRequestException('You do not have permission to remove this task');

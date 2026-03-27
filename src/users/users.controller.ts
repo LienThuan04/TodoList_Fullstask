@@ -12,7 +12,7 @@ export class UserController {
     try {
       const user = await this.userService.create(createUserDto);
       return { message: 'User created successfully', data: user };
-    } catch (error) {
+    } catch (error : any) {
       throw new BadRequestException(error.message);
     }
   }
@@ -25,7 +25,7 @@ export class UserController {
         return { message: 'No users found', data: [] };
       }
       return { message: 'Users retrieved successfully', data: users };
-    } catch (error) {
+    } catch (error : any) {
       throw new BadRequestException(error.message);
     }
   }
@@ -38,7 +38,7 @@ export class UserController {
         return { message: `User with ID ${id} not found`, data: null };
       }
       return { message: 'User retrieved successfully', data: user };
-    } catch (error) {
+    } catch (error : any) {
       throw new BadRequestException(error.message);
     }
   }
@@ -51,7 +51,7 @@ export class UserController {
         return { message: `Failed to update user with ID ${id}` };
       }
       return { message: 'User updated successfully', data: updatedUser };
-    } catch (error) {
+    } catch (error : any) {
       throw new BadRequestException(error.message);
     }
   }
@@ -64,7 +64,7 @@ export class UserController {
         return { message: `Failed to delete user with ID ${id}` };
       }
       return { message: 'User deleted successfully' };
-    } catch (error) {
+    } catch (error : any) {
       throw new BadRequestException(error.message);
     }
   }
