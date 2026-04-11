@@ -81,7 +81,7 @@ const LoginPage = () => {
                     background: "radial-gradient(125% 125% at 50% 10%, #fff 40%, #475569 100%)",
                 }}
             />
-            <div className="flex items-center justify-center text-white py-32 z-10 relative">
+            <div className="flex items-center justify-center text-white py-12 sm:py-32 z-10 relative">
                 <div className="container mx-auto px-4">
                     <div className="max-w-md mx-auto">
                         <Card>

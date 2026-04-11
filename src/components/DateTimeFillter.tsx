@@ -28,6 +28,7 @@ const DateTimeFilter = ({ dateFilterQuery, setDateFilterQuery }: { dateFilterQue
                     role="combobox"
                     size={'lg'}
                     aria-expanded={open}
+                    className="w-full sm:w-auto"
                 >
                     {dateFilterQuery
                         ? optionsDateFilter.find((option) => option.value === dateFilterQuery)?.label

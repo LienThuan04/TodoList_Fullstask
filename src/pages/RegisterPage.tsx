@@ -53,7 +53,7 @@ const RegisterPage = () => {
                 }}
             />
             {/* Your Content/Components */}
-            <div className="flex items-center justify-center text-white py-32 relative z-10">
+            <div className="flex items-center justify-center text-white py-12 sm:py-32 relative z-10">
                 <div className="container mx-auto px-4">
                     <div className="max-w-md mx-auto">
                         <Card>

@@ -66,7 +66,7 @@ const AddTask = ({ fetchTasks }: { fetchTasks: () => void }) => {
                             }}
                         />
                         <Button
-                            className="h-12 px-4 whitespace-nowrap"
+                            className="h-12 px-4 whitespace-nowrap w-full sm:w-auto"
                             variant={"gradient"}
                             size={"xl"}
                             onClick={handleAdd}

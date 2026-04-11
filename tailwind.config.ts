@@ -11,7 +11,11 @@ module.exports = {
   theme: {
     container: {
       center: true,
-      padding: "2rem",
+      padding: {
+        DEFAULT: "1rem",
+        sm: "1.5rem",
+        lg: "2rem",
+      },
       screens: {
         "2xl": "1400px",
       },
@@ -119,6 +123,9 @@ module.exports = {
         "fade-out": "fade-out 0.5s ease-out",
         "scale-in": "scale-in 0.5s ease-out",
         "slide-up": "slide-up 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
+      },
+      screens: {
+        xs: "480px",
       },
     },
   },

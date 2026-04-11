@@ -1,9 +1,9 @@
 import AddTask from "@components/AddTask";
-import Header from "@components/Header";
+import Header from "@/layouts/Header";
 import { toast } from 'sonner';
 import TaskListPagination from "@components/TaskListPagination";
 import DateTimeFilter from '@components/DateTimeFillter';
-import Footer from "@components/Footer";
+import Footer from "@/layouts/Footer";
 import StatsAndFilters from "@components/StatsAndFillters";
 import TaskList from "@components/TaskList";
 import { useEffect, useState } from "react";
@@ -119,8 +119,8 @@ const HomePage = () => {
                 }}
             />
             {/* Your Content/Components */}
-            <div className="container pt-8 mx-auto relative z-10">
-                <div className="w-full max-w-3xlxl p-6 mx-auto space-y-6">
+            <div className="container pt-4 sm:pt-8 mx-auto relative z-10">
+                <div className="w-full max-w-3xl p-3 sm:p-6 mx-auto space-y-4 sm:space-y-6">
                     <Header />
                     <button onClick={() => toast.success("Hello world!")}>
                         Show Toast
@@ -128,7 +128,7 @@ const HomePage = () => {
                     <AddTask fetchTasks={fetchTasks} />
                     <StatsAndFilters NumberStatusTasks={NumberStatusTasks} filterType={filter} setFilter={setFilter} />
                     <TaskList filteredTasks={visibleTasks} fetchTasks={fetchTasks} />
-                    <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
+                    <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-between sm:gap-6">
                         <TaskListPagination
                             currentPage={currentPage}
                             totalPages={totalPages}
@@ -136,7 +136,9 @@ const HomePage = () => {
                             onNextPage={handleNextPage}
                             onPrevPage={handlePrevPage}
                         />
-                        <DateTimeFilter dateFilterQuery={dateFilterQuery} setDateFilterQuery={setDateFilterQuery} />
+                        <div className="w-full sm:w-auto">
+                            <DateTimeFilter dateFilterQuery={dateFilterQuery} setDateFilterQuery={setDateFilterQuery} />
+                        </div>
                     </div>
                     <Footer Pending={NumberStatusTasks.pendingCount}
                         Active={NumberStatusTasks.activeCount}
