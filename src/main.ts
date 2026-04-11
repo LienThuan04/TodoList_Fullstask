@@ -22,7 +22,7 @@ async function bootstrap() {
     type: VersioningType.URI,
     defaultVersion: `${version}`,
   });
-  app.useGlobalGuards(new JwtAuthGuard(reflector)); // You can add global guards here if needed
+  app.useGlobalGuards(new JwtAuthGuard(reflector)); // You can add global guards here if needed when you call request handler, it will check if the route is public or not, if not it will check the token and validate it before calling the handler
 
   //config Pipe for validation
   app.useGlobalPipes(new ValidationPipe({

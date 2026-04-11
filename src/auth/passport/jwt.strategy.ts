@@ -4,6 +4,8 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { IUser } from '@/users/interfaces/IUser';
 
+//this file is used to validate the access token every time the user makes a request to a protected route, it will be called by the JwtAuthGuard and validate the token, if valid it will return the user information to be used in the request handler, if not it will throw an error and return 401 Unauthorized
+
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(

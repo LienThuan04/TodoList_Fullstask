@@ -45,7 +45,7 @@ export class AppController {
     async getAccountInfo(@User() user: IUser) {
         try {
             return { message: 'Account info retrieved successfully', user };
-        } catch (error) {
+        } catch (error: any) {
             throw new BadRequestException('Failed to get account info: ' + error.message);
         }
     }

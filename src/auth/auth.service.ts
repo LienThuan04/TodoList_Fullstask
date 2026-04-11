@@ -25,7 +25,7 @@ export class AuthService {
 
     private readonly refresh_token: string = "refresh_token";
 
-    async validateUser(userName: string, password: string): Promise<any> {
+    async validateUser(userName: string, password: string): Promise<IUser | null> {
         const user: any = await this.userService.findByUsernameOrEmail(userName);
         // Short-circuit when user not found to avoid null access
         if (!user) {
@@ -130,7 +130,7 @@ export class AuthService {
             }
             res.clearCookie(this.refresh_token);
             return await this.login(User, res);
-        } catch (error) {
+        } catch (error: any) {
             throw new BadRequestException('Invalid refresh token: ' + error.message);
         }
     }
@@ -143,7 +143,7 @@ export class AuthService {
             }
             res.clearCookie(this.refresh_token);
             return true;
-        } catch (error) {
+        } catch (error: any) {
             throw new BadRequestException('Logout failed: ' + error.message);
         }
     }
