@@ -21,11 +21,15 @@ import { RoleModule } from '@/roles/roles.module';
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => {
         const secret = configService.get<string>("JWT_ACCESS_TOKEN_SECRET");
-        const expiresIn = configService.get<string>("JWT_ACCESS_EXPIRE")! as string;
+        const expiresInRaw = configService.get<string>("JWT_ACCESS_EXPIRE");
+        if (!expiresInRaw) {
+          throw new Error('Missing JWT_ACCESS_EXPIRE environment variable');
+        }
+        const expiresInMs = ms(expiresInRaw as unknown as Parameters<typeof ms>[0]) as number;
         return{
           secret: secret,
           signOptions: {
-            expiresIn: ms(expiresIn as string)/1000, //chuyển ms sang giây
+            expiresIn: expiresInMs / 1000, //chuyển ms sang giây
           }
         }
       },

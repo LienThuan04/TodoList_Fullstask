@@ -17,7 +17,12 @@ export class SessionService {
 
   async UpSertSessionAsync(createSessionDto: CreateSessionDto): Promise<Session | null> {
     const filter = { userId: createSessionDto.userId };
-    const ExpiresAt: Date = new Date(Date.now() + ms(this.configService.get<string>('JWT_REFRESH_EXPIRE'))!); // Set expiration to 7 days from now
+    const jwtRefreshRaw = this.configService.get<string>('JWT_REFRESH_EXPIRE');
+    if (!jwtRefreshRaw) {
+      throw new Error('Missing JWT_REFRESH_EXPIRE environment variable');
+    }
+    const expiresMs = ms(jwtRefreshRaw as unknown as Parameters<typeof ms>[0]) as number;
+    const ExpiresAt: Date = new Date(Date.now() + expiresMs); // Set expiration to 7 days from now
     const update: Partial<Session> = { ...createSessionDto, expiresAt: ExpiresAt };
     const options = {
       upsert: true, // Create the document if it doesn't exist

@@ -44,10 +44,14 @@ export class AuthService {
     }
 
     async generateRefreshToken(payload: { _sub: string; _id: string }): Promise<string> {
-        const expiresIn = this.configService.get<string>('JWT_REFRESH_EXPIRE')! as string;
+        const expiresInRaw = this.configService.get<string>('JWT_REFRESH_EXPIRE');
+        if (!expiresInRaw) {
+          throw new Error('Missing JWT_REFRESH_EXPIRE environment variable');
+        }
+        const expiresInMs = ms(expiresInRaw as unknown as Parameters<typeof ms>[0]) as number;
         const refresh_token = this.jwtService.sign(payload, { // ghi đè các giá trị trong jwt.module.ts
             secret: this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET'),
-            expiresIn: ms(expiresIn as string) / 1000, //chuyển từ milliseconds sang seconds
+            expiresIn: expiresInMs / 1000, //chuyển từ milliseconds sang seconds
         });
         return refresh_token;
     }
@@ -74,10 +78,15 @@ export class AuthService {
         if (!setSessionDB) {
             throw new BadRequestException('Failed to create session');
         }
+        const refreshExpireRaw = this.configService.get<string>('JWT_REFRESH_EXPIRE');
+        if (!refreshExpireRaw) {
+          throw new Error('Missing JWT_REFRESH_EXPIRE environment variable');
+        }
+        const maxAgeMs = ms(refreshExpireRaw as unknown as Parameters<typeof ms>[0]) as number;
         res.cookie(this.refresh_token, refreshToken, {
             httpOnly: true,
             sameSite: 'none',
-            maxAge: ms(this.configService.get<string>('JWT_REFRESH_EXPIRE')! as string),
+            maxAge: maxAgeMs,
             secure: true,
         });
         const payLoad: IUser = {
