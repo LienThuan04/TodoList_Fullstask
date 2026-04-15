@@ -44,7 +44,7 @@ export class AuthService {
     }
 
     async generateRefreshToken(payload: { _sub: string; _id: string }): Promise<string> {
-        const expiresIn = this.configService.get<string>('JWT_REFRESH_EXPIRE');
+        const expiresIn = this.configService.get<string>('JWT_REFRESH_EXPIRE')! as string;
         const refresh_token = this.jwtService.sign(payload, { // ghi đè các giá trị trong jwt.module.ts
             secret: this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET'),
             expiresIn: ms(expiresIn as string) / 1000, //chuyển từ milliseconds sang seconds
@@ -77,7 +77,7 @@ export class AuthService {
         res.cookie(this.refresh_token, refreshToken, {
             httpOnly: true,
             sameSite: 'none',
-            maxAge: ms(this.configService.get<string>('JWT_REFRESH_EXPIRE') as string),
+            maxAge: ms(this.configService.get<string>('JWT_REFRESH_EXPIRE')! as string),
             secure: true,
         });
         const payLoad: IUser = {

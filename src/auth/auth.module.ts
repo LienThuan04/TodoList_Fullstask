@@ -21,7 +21,7 @@ import { RoleModule } from '@/roles/roles.module';
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => {
         const secret = configService.get<string>("JWT_ACCESS_TOKEN_SECRET");
-        const expiresIn = configService.get<string>("JWT_ACCESS_EXPIRE");
+        const expiresIn = configService.get<string>("JWT_ACCESS_EXPIRE")! as string;
         return{
           secret: secret,
           signOptions: {
