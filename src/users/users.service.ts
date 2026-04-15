@@ -62,6 +62,15 @@ export class UserService {
     return user;
   }
 
+  async changePasswordForIdUser(id: string, newPassword: string): Promise<User> {
+    const hashedPassword = await generatePasswordHash(newPassword, Number(this.ConfigService.get('BCRYPT_SALT_ROUNDS')));
+    const updatedUser = await this.userModel.findByIdAndUpdate(id, { password: hashedPassword }, { new: true }).exec();
+    if (!updatedUser){
+      throw new Error(`Failed to update user with ID ${id}`);
+    }
+    return updatedUser;
+  }
+
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     const role: any = updateUserDto.roleName ? await this.roleService.FindRoleByName(updateUserDto.roleName) : null;
     if (updateUserDto.roleName && !role){

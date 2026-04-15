@@ -40,3 +40,19 @@ export class RegisterDto {
     password: string
     
 }
+
+export class ChangePasswordDto {
+    @ApiProperty({ example: '123456', description: 'The old password of the user' })
+    @IsNotEmpty({ message: 'Old password must not be empty' })
+    @IsString({ message: 'Old password must be a string' })
+    @MaxLength(50, { message: 'Old password must be at most 50 characters long' })
+    @MinLength(6, { message: 'Old password must be at least 6 characters long' })
+    oldPassword: string
+
+    @ApiProperty({ example: '654321', description: 'The new password of the user' })
+    @IsNotEmpty({ message: 'New password must not be empty' })
+    @IsString({ message: 'New password must be a string' })
+    @MaxLength(50, { message: 'New password must be at most 50 characters long' })
+    @MinLength(6, { message: 'New password must be at least 6 characters long' })
+    newPassword: string
+}

@@ -9,7 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import ms from 'ms';
 import { SessionService } from '@/sessions/sessions.service';
-import { RegisterDto } from './Dtos/authRequest.dto';
+import { ChangePasswordDto, RegisterDto } from '@/auth/Dtos/authRequest.dto';
 import { RoleService } from '@/roles/roles.service';
 
 @Injectable()
@@ -132,6 +132,26 @@ export class AuthService {
             return await this.login(User, res);
         } catch (error: any) {
             throw new BadRequestException('Invalid refresh token: ' + error.message);
+        }
+    }
+
+    async ChangePassword(user: IUser, changePasswordDto: ChangePasswordDto): Promise<IUser> {
+        try {
+            const isValid = await this.validateUser(user.userName, changePasswordDto.oldPassword);
+            if (!isValid) {
+                throw new BadRequestException('Old password is incorrect');
+            }
+            const inforUser: IUser = await this.userService.findOne(user._id) as unknown as IUser;
+            if (!inforUser) {
+                throw new BadRequestException('User not found');
+            }
+            const result = await this.userService.changePasswordForIdUser(user._id, changePasswordDto.newPassword);
+            if (!result) {
+                throw new BadRequestException('Failed to change password');
+            }
+            return user;
+        } catch (error: any) {
+            throw new BadRequestException('Failed to change password: ' + error.message);
         }
     }
 

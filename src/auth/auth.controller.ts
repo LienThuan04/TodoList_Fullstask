@@ -2,7 +2,7 @@ import { Controller, Post, UseGuards, Res, Req, BadRequestException, Body } from
 import { LocalAuthGuard } from '@/auth/local-auth.guard';
 import { AuthService } from '@/auth/auth.service';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
-import { LoginDto, RegisterDto } from '@/auth/Dtos/authRequest.dto';
+import { ChangePasswordDto, LoginDto, RegisterDto } from '@/auth/Dtos/authRequest.dto';
 import { User } from '@/decorators/user.decorator';
 import type { IUser } from '@/users/interfaces/IUser';
 import type { Response } from 'express';
@@ -15,7 +15,7 @@ export class AppController {
         private readonly authService: AuthService,
     ) { }
 
-    @Public()
+    @Public() // Đánh dấu endpoint này là public để JwtAuthGuard bỏ qua xác thực
     @Post('register')
     async register(@Body() registerDto: RegisterDto, @Res({ passthrough: true }) res: Response) {
         const newAccount = await this.authService.registerUser(registerDto);
@@ -47,6 +47,17 @@ export class AppController {
             return { message: 'Account info retrieved successfully', user };
         } catch (error: any) {
             throw new BadRequestException('Failed to get account info: ' + error.message);
+        }
+    }
+
+    @Post('change-password')
+    @ApiBody({ type: ChangePasswordDto })
+    async changePassword(@User() user: IUser, @Body() changePasswordDto: ChangePasswordDto) {
+        try {
+            const resultWithUser = await this.authService.ChangePassword(user, changePasswordDto);
+            return { message: 'Password changed successfully', user: resultWithUser };
+        } catch (error: any) {
+            throw new BadRequestException('Failed to change password: ' + error.message);
         }
     }
 
