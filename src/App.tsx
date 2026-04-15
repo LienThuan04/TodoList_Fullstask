@@ -6,7 +6,7 @@ function App() {
 
   return (
     <>
-      <Toaster position="bottom-right" richColors closeButton />
+      <Toaster position="bottom-right" richColors closeButton/>
       <RoutesApp />
     </>
   )

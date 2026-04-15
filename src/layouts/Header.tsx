@@ -135,7 +135,7 @@ const Header = () => {
                                     trigger={
                                         <button
                                             type="button"
-                                            className="inline-block p-0 border-0 bg-transparent rounded-full cursor-pointer ring-2 ring-transparent hover:ring-emerald-400 transition-all duration-200"
+                                            className="inline-block p-0 border-0 bg-transparent rounded-full cursor-pointer ring-2 ring-transparent hover:ring-blue-400 transition-all duration-200"
                                             aria-label="Open user menu"
                                         >
                                             <img

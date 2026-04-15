@@ -17,7 +17,7 @@ const LoginPage = () => {
     const [emailOrUsername, setEmailOrUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [showPassword, setShowPassword] = useState<boolean>(false);
-    const [remember, setRemember] = useState<boolean>(false);
+    // const [remember, setRemember] = useState<boolean>(false);
 
     const navigate = useNavigate();
 
@@ -51,7 +51,7 @@ const LoginPage = () => {
 
             // If token is missing, show an error. Do not store non-string data.
             if (!token) {
-                toast.error(res?.data?.error || 'Login failed: token missing');
+                toast.error(res?.data?.message || 'Login failed: token missing');
                 return;
             }
 
@@ -65,8 +65,8 @@ const LoginPage = () => {
             navigate('/', { replace: true });
         } catch (error: any) {
             // On network/server error show a toast and log details for debugging.
-            console.error(error);
-            const msg = error?.response?.data?.error ? error?.response?.data?.error : error?.response?.data?.message ? error?.response?.data?.message : 'Login failed';
+            // console.error(error);
+            const msg = error?.response?.data?.message ? error?.response?.data?.message : error?.response?.data?.error ? error?.response?.data?.error : 'Login failed due to server error';
             toast.error(msg);
         }
         // console.log({ email, password, remember });
@@ -125,7 +125,7 @@ const LoginPage = () => {
                                     </div>
 
                                     <div className="flex items-center justify-between">
-                                        <label className="inline-flex items-center gap-2 text-sm">
+                                        {/* <label className="inline-flex items-center gap-2 text-sm">
                                             <input
                                                 type="checkbox"
                                                 checked={remember as boolean}
@@ -133,7 +133,7 @@ const LoginPage = () => {
                                                 className="h-4 w-4 rounded border bg-background text-primary"
                                             />
                                             <span>Remember Me</span>
-                                        </label>
+                                        </label> */}
                                         <a href="#" className="text-sm text-primary hover:underline">
                                             Forgot Password?
                                         </a>
