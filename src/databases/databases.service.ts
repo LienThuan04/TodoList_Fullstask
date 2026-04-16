@@ -46,7 +46,12 @@ export class DatabasesService implements OnModuleInit {
             { userName: 'user', email: 'user@example.com',  password: this.configService.get<string>('DEFAULT_PASSWORD')!, roleId: userRole._id },
         ];
         for (const userData of users) {
-            const existingUser = await this.userModel.findOne({ email: userData.email, userName: userData.userName }).exec();
+            const existingUser = await this.userModel.findOne({
+                $or: [
+                    { email: userData.email },
+                    { userName: userData.userName }
+                ]
+            }).exec();
             if (!existingUser) {
                 const user = await this.userModel.create({
                     ...userData,
