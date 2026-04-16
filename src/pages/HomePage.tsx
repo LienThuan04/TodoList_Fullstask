@@ -6,10 +6,11 @@ import DateTimeFilter from '@/components/Tasks/DateTimeFillter';
 import Footer from "@/layouts/Footer";
 import StatsAndFilters from "@/components/Tasks/StatsAndFillters";
 import TaskList from "@/components/Tasks/TaskList";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import api from "@lib/axios";
 import type { Itasks } from "@/types/Type.dt";
 import { visibleTasksLimit } from "@/lib/data";
+import SearchTask from "@/components/Tasks/SearchTask";
 
 const HomePage = () => {
     const [StateBuffer, setStateBuffer] = useState<Itasks[]>([]);
@@ -23,6 +24,11 @@ const HomePage = () => {
     const [filter, setFilter] = useState<string>('ALL');
     const [dateFilterQuery, setDateFilterQuery] = useState<string>('all_time');
     const [currentPage, setCurrentPage] = useState<number>(1);
+    const [searchQuery, setSearchQuery] = useState<string>("");
+    const [debouncedSearchQuery, setDebouncedSearchQuery] = useState<string>("");
+    const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    
 
     const handleNextPage = () => {
         if (currentPage < totalPages) {
@@ -39,17 +45,34 @@ const HomePage = () => {
         setCurrentPage(page);
     };
 
+    // Debounce search query - wait 400ms after user stops typing
+    useEffect(() => {
+        if (debounceTimerRef.current) {
+            clearTimeout(debounceTimerRef.current);
+        }
+        
+        debounceTimerRef.current = setTimeout(() => {
+            setDebouncedSearchQuery(searchQuery);
+        }, 400);
+        
+        return () => {
+            if (debounceTimerRef.current) {
+                clearTimeout(debounceTimerRef.current);
+            }
+        };
+    }, [searchQuery]);
+
     useEffect(() => {
         fetchTasks();
-    }, [dateFilterQuery]);
+    }, [dateFilterQuery, debouncedSearchQuery]);
 
     useEffect(() => {
         setCurrentPage(1); // reset to first page when filter or date changes
-    }, [filter, dateFilterQuery]);
+    }, [filter, dateFilterQuery, debouncedSearchQuery]);
 
     const fetchTasks = async () => {
         try {
-            const res = await api.get(`/tasks?filterDate=${dateFilterQuery}`);
+            const res = await api.get(`/tasks?filterDate=${dateFilterQuery}&search=${debouncedSearchQuery}`);
             // console.log("API response for tasks:", res.data);
             const TasksList = res?.data?.data?.tasks as Itasks[];
             setNumberStatusTasks({
@@ -111,12 +134,12 @@ const HomePage = () => {
                 className="absolute inset-0 z-0 pointer-events-none"
                 style={{
                     backgroundImage: `
-        repeating-linear-gradient(0deg, transparent, transparent 20px, rgba(34, 197, 94, 0.12) 20px, rgba(34, 197, 94, 0.12) 21px),
-        repeating-linear-gradient(90deg, transparent, transparent 30px, rgba(16, 185, 129, 0.10) 30px, rgba(16, 185, 129, 0.10) 31px),
-        repeating-linear-gradient(60deg, transparent, transparent 40px, rgba(59, 130, 246, 0.08) 40px, rgba(59, 130, 246, 0.08) 41px),
-        repeating-linear-gradient(150deg, transparent, transparent 35px, rgba(147, 51, 234, 0.06) 35px, rgba(147, 51, 234, 0.06) 36px)
-      `,
-                }}
+                                    repeating-linear-gradient(0deg, transparent, transparent 20px, rgba(34, 197, 94, 0.12) 20px, rgba(34, 197, 94, 0.12) 21px),
+                                    repeating-linear-gradient(90deg, transparent, transparent 30px, rgba(16, 185, 129, 0.10) 30px, rgba(16, 185, 129, 0.10) 31px),
+                                    repeating-linear-gradient(60deg, transparent, transparent 40px, rgba(59, 130, 246, 0.08) 40px, rgba(59, 130, 246, 0.08) 41px),
+                                    repeating-linear-gradient(150deg, transparent, transparent 35px, rgba(147, 51, 234, 0.06) 35px, rgba(147, 51, 234, 0.06) 36px)
+                                     `,
+                    }}
             />
             {/* Your Content/Components */}
             <div className="container pt-4 sm:pt-8 mx-auto relative z-10">
@@ -126,6 +149,7 @@ const HomePage = () => {
                         Show Toast
                     </button>
                     <AddTask fetchTasks={fetchTasks} />
+                    <SearchTask searchQuery={searchQuery} onSearchChange={setSearchQuery} />
                     <StatsAndFilters NumberStatusTasks={NumberStatusTasks} filterType={filter} setFilter={setFilter} />
                     <TaskList filteredTasks={visibleTasks} fetchTasks={fetchTasks} />
                     <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-between sm:gap-6">
