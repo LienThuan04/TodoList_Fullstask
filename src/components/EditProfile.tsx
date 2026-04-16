@@ -9,11 +9,11 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Camera, LogOut, Settings, User } from "lucide-react"
 import { toast } from "sonner";
-import { Dialog, DialogTrigger } from "./ui/dialog";
+import { Dialog } from "@/components/ui/dialog";
 import { useState } from "react";
 import api from "@/lib/axios";
-import { DialogSettings } from "./DialogSettings";
-import ChangesInfor from "./ChangesInfor";
+import { DialogSettings } from "@/components/DialogSettings";
+import ChangesInfor from "@/components/ChangesInfor";
 
 interface AvatarDropdownProps {
     /** Element được dùng làm trigger (avatar button) */

@@ -2,7 +2,8 @@ import axios from "axios";
 import auth from "@lib/auth";
 import { toast } from "sonner";
 
-export const domain: string = import.meta.env.MODE === "development" ? "http://localhost:8080/api/v1" : "";
+export const domain: string = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api/v1";
+
 
 const NO_RETRY_HEADER = "x-no-retry";
 let isRefreshing = false;
