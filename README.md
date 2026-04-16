@@ -102,3 +102,5 @@ Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
 ### - 1 [Connection DB](https://docs.nestjs.com/techniques/mongodb#async-configuration)
 ### - 2 [Auth](https://docs.nestjs.com/recipes/passport#authentication-requirements)
 ### - 3 [Cookies](https://docs.nestjs.com/techniques/cookies)
+
+## Deploy: Render or Railway
