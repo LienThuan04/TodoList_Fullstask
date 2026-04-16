@@ -15,13 +15,12 @@ export class TaskController {
   async create(@Body() createTaskDto: CreateTaskDto, @User() user: IUser) {
     try {
       return { message: 'Task created successfully', data: await this.taskService.create(createTaskDto, user._id) };
-    } catch (error) {
+    } catch (error: any) {
       throw new BadRequestException('Failed to create task: ' + error.message);
     }
   }
 
   @Get()
-  @ApiQuery({ name: 'filterDate', required: false })
   async findAll(@User() user: IUser, @Query() query?: FindTaskQueryDto) {
     const now = new Date();
     let startDate: Date | null = null;
@@ -49,11 +48,9 @@ export class TaskController {
         break;
       };
     };
-    const results = await this.taskService.findAllTasksByOwnerId(user._id, startDate);
-    if( results.tasks.length === 0 ){
-      return { message: 'No tasks found', data: results };
-    }
-    return { message: 'Tasks retrieved successfully', data: results };
+    const results = await this.taskService.findAllTasksByOwnerId(user._id, startDate, query?.search);
+    const message = results.tasks.length === 0 ? 'No tasks found' : 'Tasks retrieved successfully';
+    return { message, data: results };
   }
 
   @Patch(':id')
@@ -64,7 +61,7 @@ export class TaskController {
         throw new BadRequestException('You do not have permission to update this task');
       }
       return { message: 'Task updated successfully', data: await this.taskService.update(id, updateTaskDto, user._id) };
-    } catch (error) {
+    } catch (error: any) {
       throw new BadRequestException('Failed to update task: ' + error.message);
     }
   }
@@ -81,7 +78,7 @@ export class TaskController {
         throw new BadRequestException('You do not have permission to remove this task');
       }
       return { message: 'Task removed successfully', data: await this.taskService.remove(id, user._id) };
-    } catch (error) {
+    } catch (error: any) {
       throw new BadRequestException('Failed to remove task: ' + error.message);
     }
   }

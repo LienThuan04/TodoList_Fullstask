@@ -25,11 +25,20 @@ export class TaskService {
     return createdTask;
   }
 
-  async findAllTasksByOwnerId(ownerId: string, startDate: Date | null): Promise<{ tasks: Task[]; counts: { pending: number; active: number; inProgress: number; completed: number; total: number } }> {
+  async findAllTasksByOwnerId(ownerId: string, startDate: Date | null, searchTerm?: string): Promise<{ tasks: Task[]; counts: { pending: number; active: number; inProgress: number; completed: number; total: number } }> {
     const ownerIdObj = new Types.ObjectId(ownerId);
     const queryDateFilter = startDate ? { createdAt: { $gte: startDate } } : {};
+    
+    // Build search filter for title or description
+    const searchFilter = searchTerm ? {
+      $or: [
+        { title: { $regex: searchTerm, $options: 'i' } },
+        { description: { $regex: searchTerm, $options: 'i' } }
+      ]
+    } : {};
+    
     const results = await this.taskModel.aggregate([
-      { $match: { ownerId: ownerIdObj, ...queryDateFilter } },
+      { $match: { ownerId: ownerIdObj, ...queryDateFilter, ...searchFilter } },
       {
         $facet: { // Faceted Search to get tasks and counts in one query
           task: [
@@ -93,4 +102,6 @@ export class TaskService {
     }
     return task;
   }
+
+
 }

@@ -14,7 +14,14 @@ export class FindTaskQueryDto {
     default: 'all_time',
     description: 'Filter tasks by date range',
   })
+
   @IsOptional()
   @IsIn(['all_time', 'today', 'this_week', 'this_month', 'this_year'])
   filterDate?: IFilterDate;
+
+  @ApiPropertyOptional({
+    description: 'Search tasks by title or description',
+  })
+  @IsOptional()
+  search?: string;
 }
