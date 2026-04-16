@@ -3,7 +3,6 @@ import { Badge } from "@components/ui/badge";
 import { Button } from "@components/ui/button";
 import { Filter } from "lucide-react";
 
-
 const StatsAndFilters = (
     {
         filterType = "ALL",

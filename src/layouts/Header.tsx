@@ -3,7 +3,7 @@ import auth from "@lib/auth";
 import { toast } from "sonner";
 import api from "@lib/axios";
 import reactLogo from "@/assets/react.svg";
-import { AvatarDropdown } from "@/components/EditProfile";
+import { AvatarDropdown } from "@/components/Settings/TabEditProfile";
 
 const Header = () => {
     const [name, setName] = useState<string | null>(null);

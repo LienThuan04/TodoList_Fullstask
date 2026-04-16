@@ -7,13 +7,11 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Camera, LogOut, Settings, User } from "lucide-react"
-import { toast } from "sonner";
+import { Camera, LogOut, Settings } from "lucide-react"
 import { Dialog } from "@/components/ui/dialog";
 import { useState } from "react";
 import api from "@/lib/axios";
-import { DialogSettings } from "@/components/DialogSettings";
-import ChangesInfor from "@/components/ChangesInfor";
+import { DialogSettings } from "@/components/Settings/DialogSettings";
 
 interface AvatarDropdownProps {
     /** Element được dùng làm trigger (avatar button) */
@@ -28,32 +26,10 @@ interface AvatarDropdownProps {
 
 export function AvatarDropdown({ trigger, name, email, id, onChangeAvatar, onLogout, fetchAccountInfo }: AvatarDropdownProps) {
 
-    const [nameInput, setNameInput] = useState<string>(name ?? "");
-    const [emailInput, setEmailInput] = useState<string>(email ?? "");
     const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
     const [isOpenSettings, setIsOpenSettings] = useState<boolean>(false);
 
-    const handleSave = async () => {
-        if (!id) {
-            toast.error("User ID is missing");
-            return;
-        }
-        try {
-            const response: any = await api.patch(`/users/${id}`, {
-                userName: nameInput,
-                email: emailInput
-            });
-            if (response.status === 200) {
-                toast.success("Profile updated successfully");
-                setIsDialogOpen(false);
-                fetchAccountInfo();
-            } else {
-                toast.error("Failed to update profile");
-            }
-        } catch (error: any) {
-            toast.error(error.response?.data?.message || error.message);
-        }
-    }
+
 
     return (
         <>
@@ -82,14 +58,6 @@ export function AvatarDropdown({ trigger, name, email, id, onChangeAvatar, onLog
                                 Change Avatar
                             </DropdownMenuItem>
 
-                            {/*DialogTrigger là để mở dialog với tư cách là con của DropdownMenuTrigger, nó sẽ kế thừa các props của DropdownMenuTrigger*/}
-
-                            <DropdownMenuItem className="cursor-pointer" onClick={() => setIsDialogOpen(true)}>
-                                <User className="mr-2 size-4" />
-                                Edit Profile
-                            </DropdownMenuItem>
-
-
                             <DropdownMenuItem className="cursor-pointer" onClick={() => setIsOpenSettings(true)}>
                                 <Settings className="mr-2 size-4" />
                                 Settings
@@ -108,17 +76,7 @@ export function AvatarDropdown({ trigger, name, email, id, onChangeAvatar, onLog
                     </DropdownMenuContent>
                 </DropdownMenu>
             </Dialog>
-
-            <ChangesInfor
-                isOpen={isDialogOpen}
-                setOpen={setIsDialogOpen}
-                name={name}
-                email={email}
-                onSave={handleSave}
-                setEmailInput={setEmailInput}
-                setNameInput={setNameInput}
-            />
-            <DialogSettings isOpen={isOpenSettings} setOpen={setIsOpenSettings} />
+            <DialogSettings isOpen={isOpenSettings} setOpen={setIsOpenSettings} id={id} api={api} name={name} email={email} FetchInfor={fetchAccountInfo} />
         </>
     )
 }

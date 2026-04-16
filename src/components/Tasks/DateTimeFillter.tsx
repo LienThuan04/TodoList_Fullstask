@@ -51,14 +51,12 @@ const DateTimeFilter = ({ dateFilterQuery, setDateFilterQuery }: { dateFilterQue
                                         setOpen(false)
                                     }}                               
                                 >
-                                    {option.label}
-                                    
+                                    {option.label}           
                                     <Check
                                         className={cn(
                                             "ml-auto",
                                             dateFilterQuery === option.value ? "opacity-100" : "opacity-0"
                                         )}
-                                        
                                     />
                                 </CommandItem>
                             ))}

@@ -1,11 +1,11 @@
-import AddTask from "@components/AddTask";
+import AddTask from "@/components/Tasks/AddTask";
 import Header from "@/layouts/Header";
 import { toast } from 'sonner';
-import TaskListPagination from "@components/TaskListPagination";
-import DateTimeFilter from '@components/DateTimeFillter';
+import TaskListPagination from "@/components/Tasks/TaskListPagination";
+import DateTimeFilter from '@/components/Tasks/DateTimeFillter';
 import Footer from "@/layouts/Footer";
-import StatsAndFilters from "@components/StatsAndFillters";
-import TaskList from "@components/TaskList";
+import StatsAndFilters from "@/components/Tasks/StatsAndFillters";
+import TaskList from "@/components/Tasks/TaskList";
 import { useEffect, useState } from "react";
 import api from "@lib/axios";
 import type { Itasks } from "@/types/Type.dt";

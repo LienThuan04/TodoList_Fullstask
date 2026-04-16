@@ -1,5 +1,5 @@
-import TaskEmptyState from "@components/TaskEmptyState";
-import TaskCard from "@components/TaskCard";
+import TaskEmptyState from "@/components/Tasks/TaskEmptyState";
+import TaskCard from "@/components/Tasks/TaskCard";
 import type { Itasks } from "@/types/Type.dt";
 
 const TaskList = ({filteredTasks, fetchTasks}: {filteredTasks: Itasks[]; fetchTasks: () => void}) => {
