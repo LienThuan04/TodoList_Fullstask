@@ -15,5 +15,11 @@ export default defineConfig({
         '@': path.resolve(__dirname, './src'),
         '@types': path.resolve(__dirname, './src/types'),
       }
+    },
+    server: {
+      middlewareMode: true,
+      fs: {
+        strict: false
+      }
     }
 })

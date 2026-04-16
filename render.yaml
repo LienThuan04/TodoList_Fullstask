@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: frontend-todo
+    env: node
+    plan: free
+    buildCommand: npm run build
+    startCommand: npm run preview
+    staticPublicPath: /dist
+    routes:
+      - path: /*
+        destination: /index.html
