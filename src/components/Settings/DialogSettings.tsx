@@ -2,8 +2,6 @@ import { Button } from "@/components/ui/button"
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger, } from "@/components/ui/tabs"
-import { useState } from "react";
-import { toast } from "sonner";
 import FieldChangesInfor from "@/components/Settings/FieldChangesInfor";
 import type { AxiosInstance } from "axios";
 import FieldChangePass from "./FieldChangePass";
