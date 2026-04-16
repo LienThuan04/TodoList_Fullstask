@@ -62,8 +62,8 @@ const Header = () => {
             const req = await api.post("/files/upload-avatar", formData,{
                 headers: { "Content-Type": "multipart/form-data" }
             } );
-            if(!req?.data?.data){
-                toast.error(req?.data?.message || "Failed to update avatar");
+            if(!req?.data?.error){
+                toast.error(req?.data?.error || "Failed to update avatar");
             }
             fetchAccountInfo();
             toast.success(req?.data?.message || "Avatar updated successfully");
