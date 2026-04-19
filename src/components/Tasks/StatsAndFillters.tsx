@@ -1,5 +1,4 @@
 import { FilterType } from "@lib/data";
-import { Badge } from "@components/ui/badge";
 import { Button } from "@components/ui/button";
 import { Filter } from "lucide-react";
 
