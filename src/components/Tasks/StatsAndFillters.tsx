@@ -20,35 +20,39 @@ const StatsAndFilters = (
         }
     }) => {
 
+    const getCountForType = (type: string): number => {
+        const countMap: Record<string, number> = {
+            ALL: totalCount,
+            PENDING: pendingCount,
+            ACTIVE: activeCount,
+            IN_PROGRESS: inProgressCount,
+            COMPLETED: completedCount
+        };
+        return countMap[type] || 0;
+    };
+
+    const getStyleForType = (type: string): string => {
+        const styleMap: Record<string, string> = {
+            ALL: "bg-amber/20 text-zinc-200 border border-info/20",
+            PENDING: "bg-amber/20 text-red-500 border border-info/20",
+            ACTIVE: "bg-amber/50 text-accent-foreground border border-info/20",
+            IN_PROGRESS: "bg-amber/50 text-amber-400 border border-info/20",
+            COMPLETED: "bg-amber/50 text-success border border-info/20"
+        };
+        return styleMap[type] || "";
+    };
+
     return (
         <div className="flex flex-col gap-3">
-            {/* phần thống kê - wrap trên mobile */}
-            <div className="flex flex-wrap gap-2">
-                <Badge variant="secondary" className="bg-amber/20  text-zinc-200 border-info/20">
-                    {totalCount} Total
-                </Badge>
-                <Badge variant="secondary" className="bg-amber/20 text-red-500 border-info/20">
-                    {pendingCount} {FilterType.PENDING}
-                </Badge>
-                <Badge variant="secondary" className="bg-amber/50 text-accent-foreground border-info/20">
-                    {activeCount} {FilterType.ACTIVE}
-                </Badge>
-                <Badge variant="secondary" className="bg-amber/50 text-amber-400 border-info/20">
-                    {inProgressCount} {FilterType.IN_PROGRESS}
-                </Badge>
-                <Badge variant="secondary" className="bg-amber/50 text-success border-info/20">
-                    {completedCount} {FilterType.COMPLETED}
-                </Badge>
-            </div>
             {/* Filter buttons - scroll ngang trên mobile */}
             <div className="flex gap-1 overflow-x-auto pb-1 sm:flex-wrap sm:pb-0">
                 {
                     Object.keys(FilterType).map((type) => (
-                        <Button key={type} variant={filterType === type ? "gradient" : "ghost"} size={'sm'} className="capitalize shrink-0"
+                        <Button key={type} variant={filterType === type ? "gradient" : "ghost"} size={'sm'} className={`capitalize shrink-0 ${filterType === type ? "" : getStyleForType(type)}`}
                             onClick={() => setFilter(type)}
                         >
                             <Filter className="size-4" />
-                            {FilterType[type as keyof typeof FilterType]}
+                            {FilterType[type as keyof typeof FilterType]} ({getCountForType(type)})
                         </Button>
                     ))
                 }
