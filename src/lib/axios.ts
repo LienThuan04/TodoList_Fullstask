@@ -14,6 +14,7 @@ let refreshPromise: Promise<string | null> | null = null;
 const api = axios.create({
   baseURL: domain as string,
   withCredentials: true, // Include cookies in all requests
+  timeout: 10000, // Set timeout to 10 seconds
   headers: {
     "Content-Type": "application/json",
   },
@@ -36,6 +37,7 @@ const handleRefreshToken = async (): Promise<string | null> => {
     try {
       const response = await axios.post(`${domain}/auth/refresh-token`, {}, {
         withCredentials: true, // Include cookies in the request
+        timeout: 10000, // Set timeout for refresh request
       });
       if (response?.data?.accessToken) {
         const newToken = response.data.accessToken;
@@ -46,7 +48,16 @@ const handleRefreshToken = async (): Promise<string | null> => {
     } catch (error: any) {
       console.error("Failed to refresh token:", error.message);
       auth.removeToken();
-      toast.error("Session expired, please log in again.");
+      
+      // Provide specific error message based on error type
+      if (error.code === "ECONNABORTED" || error.message?.includes("timeout")) {
+        toast.error("⚠️ Server đang không phản hồi. Phiên làm việc của bạn hết hạn. Vui lòng đăng nhập lại.");
+      } else if (!error.response) {
+        toast.error("⚠️ Không thể kết nối đến server để làm mới phiên. Vui lòng đăng nhập lại.");
+      } else {
+        toast.error("Phiên làm việc hết hạn, vui lòng đăng nhập lại.");
+      }
+      
       setTimeout(() => {
         if (typeof window !== "undefined") {
           window.location.href = "/login";
@@ -91,12 +102,34 @@ api.interceptors.request.use(
   - If the server returns 401 (unauthorized), attempt to refresh the token
   - If refresh is successful, retry the original request with the new token
   - If refresh fails or request was already retried, redirect to /login
+  - Handle network errors, timeouts, and server unavailability with user notifications
 */
 api.interceptors.response.use(
   (res) => res,
   async (err) => {
     const originalConfig = err.config;
     
+    // Handle network errors and timeouts
+    if (!err.response) {
+      if (err.code === "ECONNABORTED") {
+        toast.warning("⚠️ Yêu cầu vượt quá thời gian chờ. Server có thể đang bận hoặc không phản hồi.");
+      } else if (err.code === "ERR_NETWORK" || err.message === "Network Error") {
+        toast.warning("⚠️ Không thể kết nối đến server. Vui lòng kiểm tra kết nối mạng hoặc server có thể không khả dụng.");
+      } else if (err.code === "ECONNREFUSED") {
+        toast.warning("⚠️ Server hiện không khả dụng. Vui lòng thử lại sau.");
+      } else {
+        toast.warning("⚠️ Không thể kết nối đến server. Vui lòng kiểm tra kết nối mạng của bạn.");
+      }
+      return Promise.reject(err);
+    }
+
+    // Handle server errors (5xx)
+    if (err.response?.status >= 500) {
+      toast.warning("⚠️ Server đang gặp sự cố. Vui lòng thử lại sau.");
+      return Promise.reject(err);
+    }
+
+    // Handle 401 Unauthorized - attempt token refresh
     if (
       originalConfig &&
       err?.response?.status === 401 &&
@@ -117,6 +150,11 @@ api.interceptors.response.use(
         // Retry the original request
         return api.request(originalConfig);
       }
+    }
+
+    // Handle other errors
+    if (err.response?.status === 429) {
+      toast.warning("⚠️ Bạn đang gửi yêu cầu quá nhiều. Vui lòng đợi một chút.");
     }
 
     return Promise.reject(err);
