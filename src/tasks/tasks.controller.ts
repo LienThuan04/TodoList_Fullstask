@@ -4,8 +4,7 @@ import { CreateTaskDto } from '@/tasks/dto/create-task.dto';
 import { UpdateTaskDto } from '@/tasks/dto/update-task.dto';
 import { User } from '@/decorators/user.decorator';
 import type { IUser } from '@/users/interfaces/IUser';
-import { ApiQuery } from '@nestjs/swagger';
-import { FindTaskQueryDto } from './dto/find-task-query.dto';
+import { FindTaskQueryDto } from '@/tasks/dto/find-task-query.dto';
 
 @Controller('tasks')
 export class TaskController {

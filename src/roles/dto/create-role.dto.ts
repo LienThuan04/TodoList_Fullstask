@@ -10,7 +10,7 @@ export class CreateRoleDto {
     name: string;
 
     @ApiProperty({ example: 'Administrator role with full permissions', description: 'The description of the role', required: false })
-    @IsOptional()
+    @IsOptional({ message: 'Description is optional' })
     @IsString({ message: 'Description must be a string' })
     @MaxLength(200, { message: 'Description must be at most 200 characters long' })
     description?: string;
