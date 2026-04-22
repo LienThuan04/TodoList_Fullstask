@@ -10,7 +10,7 @@ interface SearchTaskProps {
 export default function SearchTask({ searchQuery, onSearchChange }: SearchTaskProps) {
     return (
         <div className="w-full">
-            <Label htmlFor="search-task" className="text-sm font-medium text-gray-300 mb-2 block">
+            <Label htmlFor="search-task" className="text-sm font-medium text-gray-400 mb-2 block">
                 Search Tasks
             </Label>
             <div className="relative">
@@ -21,7 +21,7 @@ export default function SearchTask({ searchQuery, onSearchChange }: SearchTaskPr
                     placeholder="Search by title or description of tasks..."
                     value={searchQuery}
                     onChange={(e) => onSearchChange(e.target.value)}
-                    className="pl-10 pr-10 py-2 bg-[#1a1a1a] border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    className="pl-10 pr-10 py-2 bg-gradient-card border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 />
                 {searchQuery && (
                     <button

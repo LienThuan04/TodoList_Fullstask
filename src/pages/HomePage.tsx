@@ -11,6 +11,8 @@ import api from "@lib/axios";
 import type { Itasks } from "@/types/Type.dt";
 import { visibleTasksLimit } from "@/lib/data";
 import SearchTask from "@/components/Tasks/SearchTask";
+import { getTheme, type ThemeName } from "@/components/Settings/theme";
+import ThemeSelector from "@/components/Settings/ThemeSelector";
 
 const HomePage = () => {
     const [StateBuffer, setStateBuffer] = useState<Itasks[]>([]);
@@ -27,8 +29,15 @@ const HomePage = () => {
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState<string>("");
     const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const [theme, setTheme] = useState<ThemeName>(() => {
+        const savedTheme = localStorage.getItem("theme") as ThemeName | null;
+        return savedTheme || "system";
+    });
 
-    
+    // Save theme to localStorage when it changes
+    useEffect(() => {
+        localStorage.setItem("theme", theme);
+    }, [theme]);
 
     const handleNextPage = () => {
         if (currentPage < totalPages) {
@@ -133,21 +142,14 @@ const HomePage = () => {
             <div
                 className="absolute inset-0 z-0 pointer-events-none"
                 style={{
-                    backgroundImage: `
-                                    repeating-linear-gradient(0deg, transparent, transparent 20px, rgba(34, 197, 94, 0.12) 20px, rgba(34, 197, 94, 0.12) 21px),
-                                    repeating-linear-gradient(90deg, transparent, transparent 30px, rgba(16, 185, 129, 0.10) 30px, rgba(16, 185, 129, 0.10) 31px),
-                                    repeating-linear-gradient(60deg, transparent, transparent 40px, rgba(59, 130, 246, 0.08) 40px, rgba(59, 130, 246, 0.08) 41px),
-                                    repeating-linear-gradient(150deg, transparent, transparent 35px, rgba(147, 51, 234, 0.06) 35px, rgba(147, 51, 234, 0.06) 36px)
-                                     `,
+                    backgroundImage: `${getTheme(theme)}`,
                     }}
             />
             {/* Your Content/Components */}
             <div className="container pt-4 sm:pt-8 mx-auto relative z-10">
                 <div className="w-full max-w-3xl p-3 sm:p-6 mx-auto space-y-4 sm:space-y-6">
                     <Header />
-                    <button onClick={() => toast.success("Hello world!")}>
-                        Show Toast
-                    </button>
+                    <ThemeSelector theme={theme} setTheme={setTheme} />
                     <AddTask fetchTasks={fetchTasks} />
                     <SearchTask searchQuery={searchQuery} onSearchChange={setSearchQuery} />
                     <StatsAndFilters NumberStatusTasks={NumberStatusTasks} filterType={filter} setFilter={setFilter} />
