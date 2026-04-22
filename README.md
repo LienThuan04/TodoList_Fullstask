@@ -222,6 +222,7 @@ npx shadcn@latest add "component mà bạn muốn cài"
 Sau khi cài component thì trong dự án thư mục `src` sẽ có thêm 1 thư mục `component` và có thư mục `ui` bên trong chứa các component mà bạn đã tải.
 
 # trang Web Background cho dự án: [patterncraft](https://patterncraft.fun/)
+# SVG [Logo](https://www.thesvg.org)
 
 ### Copyright belongs to [LianHarman](https://www.facebook.com/LianHarman/)
 
